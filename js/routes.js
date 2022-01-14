@@ -92,6 +92,10 @@ var routes = [
     url: "./pages/order-history.html",
   },
   {
+    path: "/favourites/",
+    url: "./pages/favourites.html",
+  },
+  {
     path: "/ttt/",
     url: "./pages/ttt.html",
   },

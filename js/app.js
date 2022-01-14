@@ -58,6 +58,20 @@ function init() {
   showAllergies();
   showDiets();
   displayOrders();
+
+  // swipeout preview when app used for the first time
+  document
+    .getElementById("order-toolbar")
+    .setAttribute("onclick", "initSwipeout()");
+
+  // Event listener: Call favouriteDish() if user clicks on favourite button
+  document
+    .querySelector(".favourite-button")
+    .addEventListener("click", favouriteDish);
+
+  //default
+  selectedDish = dishes[0];
+  console.log(`selectedDish = ${dishes[0]}`);
 }
 
 //===========================================================================================================================================================================================================================
@@ -206,7 +220,7 @@ function displayOrders() {
 
     Object.values(orderItems).map((item) => {
       orderList.innerHTML +=
-        '<li class="swipeout"><div class="item-content swipeout-content"><div class="item-media serving-counter"><!-- serving - counter --><i class="icon f7-icons if-not-md"><span class="badge color-blue" id="serving-count1">' +
+        '<li class="swipeout swiper"><div class="item-content swipeout-content"><div class="item-media serving-counter"><!-- serving - counter --><i class="icon f7-icons if-not-md"><span class="badge color-blue" id="serving-count1">' +
         item.inOrder +
         '</span></i><i class="icon material-icons md-only"><span class="badge color-blue" id="serving-count2">' +
         item.inOrder +
@@ -455,7 +469,7 @@ function showDishes(tabName, tabLink) {
   currentTab = tabName;
   currentLink = tabLink;
 
-  console.log("showDishes(tabName, tabLink)  called!");
+  console.log(`showDishes(${tabName},${tabLink})  called!`);
   //loads id's of different tabs
   dishes.forEach((dishes) => {
     if (dishes.tab === tabName) {
@@ -483,7 +497,11 @@ function showDishes(tabName, tabLink) {
           "innertab"
         ).innerHTML += `<div class="card demo-card-header-pic">            
 
-              <div href="#view-detailed-view" onclick="loadDetailedView(dishes[${index}],'dishoverview','dontMatter');" style="background-image: url(${
+              <div id="${
+                dishes.id
+              }" href="#view-detailed-view" onclick="switchDish(${
+          dishes.id
+        });loadDetailedView(dishes[${index}],'dishoverview','dontMatter')" style="background-image: url(${
           dishes.imgSrc
         });" class="card-header tab-link full-width align-items-flex-end ${veganBan}"> 
               </div>        
@@ -518,7 +536,10 @@ function showDishes(tabName, tabLink) {
         document.getElementById(
           "innertab"
         ).innerHTML += `<div class="card demo-card-header-pic">            
-              <div href="#view-detailed-view" onclick="loadDetailedView(dishes[${index}],'dishoverview');" style="background-image: url(${
+         
+        <div id="${dishes.id}" href="#view-detailed-view" onclick="switchDish(${
+          dishes.id
+        });loadDetailedView(dishes[${index}],'dishoverview','dontMatter')" style="background-image: url(${
           dishes.imgSrc
         });" class="card-header tab-link full-width align-items-flex-end ${allergyWarner} ${veganBan}"> 
               </div>        
@@ -1437,6 +1458,137 @@ function checkAnswer() {
     app.dialog.alert("Well done! That was the correct answer");
   } else {
     app.dialog.alert("Try again!");
+  }
+}
+
+//===========================================================================================================================================================================================================================
+
+function showDetailedHeader() {
+  console.log("showDetailedHeader() called!");
+  //access the favourite boolean of the currently selected channel.
+  document.querySelector(".favourite-button").innerHTML = selectedDish.favourite
+    ? "favorite"
+    : "favorite_border";
+}
+
+//===========================================================================================================================================================================================================================
+
+// Toggles favourite property of dish and displays dish accordingly in panel
+function favouriteDish() {
+  console.log("favouriteDish() called!");
+  selectedDish.favourite = selectedDish.favourite ? false : true;
+  dishes.forEach((dish) => {
+    if (dish.id == selectedDish.id) {
+      dish = selectedDish;
+    }
+  });
+  displaySelected();
+  switchDish(selectedDish.id);
+}
+
+//===========================================================================================================================================================================================================================
+
+function displaySelected() {
+  console.log("displaySelected() called!");
+  const favouriteList = document.getElementById("favourites-list");
+  favouriteList.innerHTML = ""; // making sure that there is no content inside these two lists
+  let notFavourite = 0;
+
+  //The code below takes the empty favourite list, and loads the dishes into this list
+  dishes.forEach((dish) => {
+    console.log(`dish.favourite: `, dish.favourite);
+    if (dish.favourite) {
+      favouriteList.innerHTML += `<li>
+      <div class="item-content">
+        <div class="item-media detailed">
+          <img
+            id="restaurant-img"
+            src="${dish.imgSrc}"
+            width="61"
+            height="61"
+          />
+        </div>
+        <div class="item-inner">
+          <div class="item-title-row">
+            <div class="item-title">${dish.name}</div>
+            <a
+              href="#"
+              class="
+                col
+                button button-small button-round button-outline
+                order-again
+              "
+              onclick="showLoading(0.6);"
+              >ReOrder</a
+            >
+          </div>
+          <div class="item-subtitle">${dish.price.toFixed(2)} €</div>
+        </div>
+      </div>
+    </li>`;
+    } else {
+      notFavourite++;
+    }
+  });
+  console.log(
+    `There are ${dishes.length - notFavourite} favourite dishes in total!`
+  );
+
+  if (dishes.length - notFavourite == 0) {
+    /* if there are no favourite dishes */
+    favouriteList.innerHTML = ``;
+    favouriteList.innerHTML = "Favourite dishes go here!";
+    console.log(`There are no favourite dishes!`);
+  }
+
+  //always add selected class to current dish
+  if (!!selectedDish) {
+    document.getElementById(selectedDish.id).classList.add("selected");
+  }
+}
+
+//===========================================================================================================================================================================================================================
+
+function switchDish(selectedDishID) /*dish in detailed view.*/ {
+  console.log("switchDish() called!");
+  console.log(` selected dish ID = "${selectedDishID}"`);
+  if (!!selectedDish) {
+    console.log(`It is ${!!selectedDish} that the selectedDish exists`);
+    console.log(`selectedDish.id: ${selectedDish.id}`);
+    if (!!document.getElementById(selectedDish.id)) {
+      document.getElementById(selectedDish.id).classList.remove("selected");
+    }
+  }
+  document.getElementById(selectedDishID).classList.add("selected");
+  dishes.forEach((dish) => {
+    if (dish.id == selectedDishID) {
+      selectedDish = dish;
+    }
+  });
+  showDetailedHeader();
+}
+
+//===========================================================================================================================================================================================================================
+
+function initSwipeout() {
+  let orderNumber = localStorage.getItem("orderNumbers");
+  orderNumber = JSON.parse(orderNumber);
+
+  if (orderNumber > 0) {
+    // swipeout preview when app used for the first time
+    document
+      .getElementById("order-toolbar")
+      .removeAttribute("onclick", "initSwipeout()");
+
+    setTimeout(() => {
+      app.swipeout.open(".swiper", "right", () => {
+        setTimeout(() => {
+          app.swipeout.close(`.swiper`);
+        }, 2000);
+      });
+    }, 2000);
+  } else {
+    return;
   }
 }
 

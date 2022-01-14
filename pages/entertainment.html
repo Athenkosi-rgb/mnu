@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <!--This page shows the Entertainment page, including a small minigame in which you have to sort the items in the correct order to win-->
 <div class="page" data-name="entertainment">
   <div class="navbar">
@@ -101,39 +102,5 @@
         </li>
       </ul>
     </div>
-
-    <style>
-      .icon-f7 {
-        background: #ee350f;
-        color: #fff !important;
-        border-radius: 50%;
-        text-align: center;
-      }
-
-      .icon-f7:before {
-        content: "7";
-      }
-
-      .ios .icon-f7 {
-        width: 29px;
-        height: 29px;
-        line-height: 29px;
-      }
-
-      .md .icon-f7 {
-        width: 24px;
-        height: 24px;
-        line-height: 24px;
-      }
-    </style>
-    <script>
-      export default (props, { $f7 }) => {
-        $f7.on("sortableSort", function (listEl, indexes) {
-          console.log(indexes);
-        });
-
-        return $render;
-      };
-    </script>
   </div>
 </div>
