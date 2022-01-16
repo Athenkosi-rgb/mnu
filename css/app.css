@@ -17,6 +17,28 @@
   margin-right: 8px;
 }
 
+.flexible {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0px 15px 0px 0px;
+}
+
+.group_add-icon {
+  color: #8e8e93;
+  margin-left: -5px;
+  margin-bottom: 2px;
+}
+
+.group_add-button {
+  background-color: var(--f7-card-bg-color);
+  border-style: solid;
+  border-color: #8e8e93;
+  border-radius: 50%;
+  padding: 10px;
+  margin-bottom: -10px;
+}
+
 /* NAVIGATION-DRAWER SCREEN */
 .sidenav-title {
   margin-left: 60px;

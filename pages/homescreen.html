@@ -56,6 +56,7 @@
     </div>
 
     <!-- Group Order stuff -->
+    <!-- Group Order Sheet1 -->
     <div
       class="sheet-modal my-sheet-swipe-to-close"
       style="height: auto"
@@ -98,6 +99,7 @@
       </div>
     </div>
 
+    <!-- Group Order Sheet2 -->
     <div
       class="sheet-modal my-sheet2-swipe-to-close"
       style="height: auto"
@@ -108,8 +110,8 @@
           <div class="block-title block-title-large groupOrder-name"></div>
           <div class="block groupOrder-exp">
             <p>
-              Share the link below to add friends to your order. And add dishes
-              by clicking the button below.
+              Share the link below to add friends to your order. Add dishes by
+              clicking the button below.
             </p>
             <div class="list inset">
               <ul>
@@ -127,9 +129,9 @@
             <a
               class="button button-large button-fill sheet-close"
               href="#"
-              onclick="app.tab.show('#view-dishoverview'),groupOrder(),showLoading(4)"
               id="addToGroupOrder"
               data-sheet=".my-sheet2-swipe-to-close"
+              onclick="groupOrder();showLoading(2)"
               >Add to Group Order</a
             >
           </div>
@@ -137,6 +139,43 @@
       </div>
     </div>
 
+    <!-- Group Order Sheet3 -->
+    <div
+      class="sheet-modal my-sheet3-swipe-to-close"
+      style="height: auto"
+      data-swipe-to-close="true"
+    >
+      <div class="sheet-modal-inner">
+        <div class="page-content">
+          <div class="block">
+            <p>Share the link below to add friends to your order.</p>
+            <div class="list inset">
+              <ul>
+                <li class="item-content item-input">
+                  <div class="item-inner">
+                    <a
+                      class="link"
+                      href="https://framework7.io/docs/installation"
+                      >https://framework7.io/docs/installation</a
+                    >
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <a
+              class="button button-large button-fill sheet-open"
+              href="#"
+              onclick="showLoading(1)"
+              id="shareGroupOrder"
+              data-sheet=".my-sheet-swipe-to-step"
+              >Invite Guests</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Group Order Sheet4 -->
     <div
       class="sheet-modal my-sheet-swipe-to-step"
       style="height: auto"
@@ -146,16 +185,29 @@
       <div class="sheet-modal-inner">
         <div class="page-content">
           <div class="sheet-modal-swipe-step">
-            <!-- <div class="block-title block-title-large groupOrder-name3"></div> -->
+            <div class="flexible">
+              <div
+                class="block-title block-title-medium groupOrder-name3"
+              ></div>
+              <span
+                class="group_add-button sheet-open"
+                data-sheet=".my-sheet3-swipe-to-close"
+                ><i class="button icon material-icons if-md group_add-icon"
+                  >group_add</i
+                ></span
+              >
+            </div>
+            <!-- <hr /> -->
             <div
               class="display-flex padding justify-content-space-between align-items-center"
             >
-              <div style="font-size: 18px"><b>Group Order Total:</b></div>
-              <div style="font-size: 22px" id="groupOrderTotal">
-                <b>0.00 €</b>
-              </div>
+              <div style="font-size: 18px">Group Order Total:</div>
+              <div style="font-size: 18px" id="groupOrderTotal">0.00 €</div>
             </div>
-            <div class="padding-horizontal padding-bottom">
+            <div
+              class="padding-horizontal padding-bottom"
+              onclick="cancelGroupOrder('yes')"
+            >
               <a class="button button-large button-fill">Make Payment</a>
               <div class="margin-top text-align-center">
                 Swipe up for more details
