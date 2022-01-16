@@ -111,14 +111,15 @@ function displayMenuTabs() {
   });
   //show antipasti tab at beginning
   showDishes("Antipasti", "antipasti");
+  activateChips("Antipasti");
 }
 
 function activateChips(selectedChip) {
   var allChips = document.getElementsByName("menu-chips");
   for (var i = 0; i < allChips.length; i++) {
-    allChips[i].classList.remove("chips-active");
+    allChips[i].classList.remove("chips-activated");
   }
-  document.getElementById(selectedChip).classList.add("chips-active");
+  document.getElementById(selectedChip).classList.add("chips-activated");
 }
 
 //===========================================================================================================================================================================================================================
@@ -220,9 +221,9 @@ function displayOrders() {
 
     Object.values(orderItems).map((item) => {
       orderList.innerHTML +=
-        '<li class="swipeout swiper"><div class="item-content swipeout-content"><div class="item-media serving-counter"><!-- serving - counter --><i class="icon f7-icons if-not-md"><span class="badge color-blue" id="serving-count1">' +
+        '<li class="swipeout swiper"><div class="item-content swipeout-content"><div class="item-media serving-counter"><!-- serving - counter --><i class="icon f7-icons if-not-md"><span class="badge color-blue serving-count1">' +
         item.inOrder +
-        '</span></i><i class="icon material-icons md-only"><span class="badge color-blue" id="serving-count2">' +
+        '</span></i><i class="icon material-icons md-only"><span class="badge color-blue serving-count1">' +
         item.inOrder +
         '</span></i></div><div class="item-inner"><div class="item-title-row"><div class="item-title">' +
         item.name +
@@ -464,10 +465,19 @@ function compatibleDiet(ingredientDiet) {
 
 //===========================================================================================================================================================================================================================
 
+let firstTime = true;
+
 //show dishes in tabs
 function showDishes(tabName, tabLink) {
   currentTab = tabName;
   currentLink = tabLink;
+
+  if (firstTime) {
+    filterIconString = "filter_list";
+    firstTime = false;
+  } else {
+    filterIconString = document.getElementById("filter-icon-on").innerHTML;
+  }
 
   console.log(`showDishes(${tabName},${tabLink})  called!`);
   //loads id's of different tabs
@@ -476,6 +486,18 @@ function showDishes(tabName, tabLink) {
       document.getElementById(
         "tab-dishes"
       ).innerHTML = `<div id="${tabLink}" class="page-content tab">
+      <div class="buton-filter-container">
+      <button class="button button-small button-raised button-fill sheet-open"
+      href="#"
+      data-sheet=".my-sheet-swipe-to-close"
+      id="grouporder-button"
+    >
+    <i class="icon material-icons if-md group_add">group_add</i>
+    Group Order</button>
+    <span id="filter-button" class="button button-raised">
+    <i class="icon material-icons" id="filter-icon-on">${filterIconString}</i>
+    </span>
+    </div>
       <div id="innertab" class="block full-width" style="margin: 0;"></div></div>`;
       document.getElementById(tabLink).style.display = "block";
     }
@@ -515,6 +537,10 @@ function showDishes(tabName, tabLink) {
            `;
       }
     });
+
+    document.getElementById(
+      "innertab"
+    ).innerHTML += `<div class="block"><a class="button button-large button-fill sheet-open" href="#" data-sheet=".my-sheet-swipe-to-step" id="view-grouporder-button3">View Group Order</a></div>`;
   }
 
   //filter off, non-allergic food gets marked
@@ -552,6 +578,24 @@ function showDishes(tabName, tabLink) {
             </div>`;
       }
     });
+
+    document.getElementById(
+      "innertab"
+    ).innerHTML += `<div class="block"><a class="button button-large button-fill sheet-open" href="#" data-sheet=".my-sheet-swipe-to-step" id="view-grouporder-button3">View Group Order</a></div>`;
+  }
+  document
+    .getElementById("filter-button")
+    .setAttribute(
+      "onclick",
+      "toggleFilter();showDishesFilter();showFilterPopup();"
+    );
+  let viewGroupOrderButton = document.querySelector("#view-grouporder-button");
+  let groupOrderActive =
+    viewGroupOrderButton.style.display == "block" ? true : false;
+  console.log("groupOrderActive = ", groupOrderActive);
+  console.log("typeof  groupOrderActive = ", typeof groupOrderActive);
+  if (groupOrderActive) {
+    groupOrder();
   }
   allergyBadgeOverview();
   veganBanner();
@@ -935,6 +979,7 @@ function loadDetailedView(plate, from, thisDish) {
   let stepperValue = document.getElementById("stepper-value");
   let ingredientAccordion = document.getElementById("ingredient-list");
   let allergyWarning = document.getElementById("allergy-paragraph");
+  document.querySelector(".detailed-img").classList.remove("alter-height");
 
   detailedItems = JSON.parse(detailedItems);
   orderedDishes = JSON.parse(orderedDishes);
@@ -1002,6 +1047,14 @@ function loadDetailedView(plate, from, thisDish) {
         }
       }
     }
+  }
+
+  let imageHeight = document.querySelector(".detailed-img").clientHeight;
+  let body45vh = 0.45 * document.body.clientHeight;
+  let tooShort = imageHeight < body45vh ? true : false;
+
+  if (tooShort) {
+    document.querySelector(".detailed-img").classList.add("alter-height");
   }
 }
 
@@ -1293,9 +1346,9 @@ function loadTo(to) {
         Object.entries(value).forEach(([key, item]) => {
           totalPastOrders += item.inOrder * item.price;
           pastOrdersList.innerHTML +=
-            '<li><div class="item-content swipeout-content"><div class="item-media serving-counter"><!-- serving - counter --><i class="icon f7-icons if-not-md"><span class="badge color-blue" id="serving-count1">' +
+            '<li><div class="item-content swipeout-content"><div class="item-media serving-counter"><!-- serving - counter --><i class="icon f7-icons if-not-md"><span class="badge color-blue serving-count1">' +
             item.inOrder +
-            '</span></i><i class="icon material-icons md-only"><span class="badge color-blue" id="serving-count2">' +
+            '</span></i><i class="icon material-icons md-only"><span class="badge color-blue serving-count1">' +
             item.inOrder +
             '</span></i></div><div class="item-inner"><div class="item-title-row"><div class="item-title">' +
             item.name +
@@ -1401,13 +1454,17 @@ function showCheckIn() {
 
 //toggle Filter for dishes
 function toggleFilter() {
+  console.log("toggleFilter() called!");
   filter = filter ? false : true;
-  document.getElementById("filter-icon-on").style.display = filter
-    ? "inline"
-    : "none";
-  document.getElementById("filter-icon-off").style.display = filter
-    ? "none"
-    : "inline";
+  console.log("filter = ", filter);
+  document.getElementById("filter-icon-on").innerHTML = filter
+    ? "filter_list"
+    : "filter_list_off";
+
+  console.log(
+    "document.getElementById('filter-icon-on').innerHTML = ",
+    document.getElementById("filter-icon-on").innerHTML
+  );
 }
 //===========================================================================================================================================================================================================================
 
@@ -1519,7 +1576,7 @@ function displaySelected() {
                 order-again
               "
               onclick="showLoading(0.6);"
-              >ReOrder</a
+              >Order</a
             >
           </div>
           <div class="item-subtitle">${dish.price.toFixed(2)} €</div>
@@ -1590,6 +1647,254 @@ function initSwipeout() {
   } else {
     return;
   }
+}
+
+//===========================================================================================================================================================================================================================
+
+function groupOrderName() {
+  let groupOrderName = document.querySelector("#groupOrder-name");
+  document.querySelector(
+    ".groupOrder-name"
+  ).innerHTML = `${groupOrderName.value}'s Group Order`;
+  // document.querySelector(
+  //   ".groupOrder-name3"
+  // ).innerHTML = `${groupOrderName.value}'s Group Order`;
+}
+
+//===========================================================================================================================================================================================================================
+
+function groupOrder() {
+  console.log("groupOrder() called!");
+
+  let groupOrderName = document.querySelector("#groupOrder-name");
+  let groupOrderButton = document.querySelector("#grouporder-button");
+  let orderButton = document.querySelector("#order-button");
+  let viewGroupOrderButton = document.querySelector("#view-grouporder-button");
+  let viewGroupOrderButton2 = document.querySelector(
+    "#view-grouporder-button2"
+  );
+  let viewGroupOrderButton3 = document.querySelector(
+    "#view-grouporder-button3"
+  );
+  document.querySelector(
+    ".groupOrder-name2"
+  ).innerHTML = `${groupOrderName.value} (You)`;
+
+  console.log("groupOrderButton.innerHTML = ", groupOrderButton.innerHTML);
+
+  groupOrderButton.innerHTML = `<i class="icon material-icons if-md group_add">group_add</i>View Group Order`;
+  groupOrderButton.setAttribute("data-sheet", ".my-sheet-swipe-to-step");
+  groupOrderButton.setAttribute("onclick", "displayGroupOrder()");
+  viewGroupOrderButton.setAttribute("onclick", "displayGroupOrder()");
+  viewGroupOrderButton2.setAttribute("onclick", "displayGroupOrder()");
+  viewGroupOrderButton3.setAttribute("onclick", "displayGroupOrder()");
+  orderButton.style.display = "none";
+  viewGroupOrderButton.style.display =
+    viewGroupOrderButton2.style.display =
+    viewGroupOrderButton3.style.display =
+      "block";
+}
+
+function cancelGroupOrder() {
+  let groupOrderButton = document.querySelector("#grouporder-button");
+  let orderButton = document.querySelector("#order-button");
+  let viewGroupOrderButton = document.querySelector("#view-grouporder-button");
+  let viewGroupOrderButton2 = document.querySelector(
+    "#view-grouporder-button2"
+  );
+  let viewGroupOrderButton3 = document.querySelector(
+    "#view-grouporder-button3"
+  );
+  let profileBlock1 = document.querySelector(".profile-block1");
+  let profileBlock2 = document.querySelector(".profile-block2");
+  let profileBlock3 = document.querySelector(".profile-block3");
+  let yourOrderList = document.getElementById("yourGroupOrder");
+  let friend1OrderList = document.getElementById("friend1GroupOrder");
+  let friend2OrderList = document.getElementById("friend2GroupOrder");
+  let groupOrderTotalHtml = document.getElementById("groupOrderTotal");
+
+  app.dialog.confirm("All items will be removed", "Cancel group order?", () => {
+    //putting relevant stuff on orderList
+    //Your order items
+    yourOrderList.innerHTML =
+      friend1OrderList.innerHTML =
+      friend2OrderList.innerHTML =
+        " ";
+
+    groupOrderTotalHtml.innerHTML = `0.00 €`;
+    profileBlock1.style.display =
+      profileBlock2.style.display =
+      profileBlock3.style.display =
+        "none";
+
+    //do some stuff here
+    viewGroupOrderButton.style.display =
+      viewGroupOrderButton2.style.display =
+      viewGroupOrderButton3.style.display =
+        "none";
+    orderButton.style.display = "block";
+
+    groupOrderButton.innerHTML ==
+      `<i class="icon material-icons if-md group_add">group_add</i>Group Order`;
+    groupOrderButton.removeAttribute("data-sheet", ".my-sheet-swipe-to-step");
+
+    app.sheet.close(".my-sheet-swipe-to-step", true);
+    showDishes(menuTabs[0].name, menuTabs[0].link);
+    activateChips(menuTabs[0].name);
+  });
+}
+
+//==========================================================================================================================================================
+
+function displayGroupOrder() {
+  console.log("displayGroupOrder() called!");
+  let profileBlock1 = document.querySelector(".profile-block1");
+  let profileBlock2 = document.querySelector(".profile-block2");
+  let profileBlock3 = document.querySelector(".profile-block3");
+  let groupOrderButton = document.querySelector("#grouporder-button");
+  let yourOrderList = document.getElementById("yourGroupOrder");
+  let friend1OrderList = document.getElementById("friend1GroupOrder");
+  let friend2OrderList = document.getElementById("friend2GroupOrder");
+  let groupOrderTotalHtml = document.getElementById("groupOrderTotal");
+  let viewGroupOrderButton = document.querySelector("#view-grouporder-button");
+  let here1 = document.querySelector(".here1");
+  let here2 = document.querySelector(".here2");
+  let viewGroupOrderButton2 = document.querySelector(
+    "#view-grouporder-button2"
+  );
+  let viewGroupOrderButton3 = document.querySelector(
+    "#view-grouporder-button3"
+  );
+  let groupOrderTotal = 0.0;
+
+  //putting relevant stuff on orderList
+  //Your order items
+  yourOrderList.innerHTML =
+    friend1OrderList.innerHTML =
+    friend2OrderList.innerHTML =
+    here1.innerHTML =
+    here2.innerHTML =
+      " ";
+  profileBlock1.style.display = "block";
+
+  setTimeout(() => {
+    yourOrder.forEach((item) => {
+      item.inOrder = 1;
+      groupOrderTotal += item.inOrder * item.price;
+      yourOrderList.innerHTML +=
+        '<li class="swipeout swiper"><div class="item-content swipeout-content"><div class="item-media serving-counter"><!-- serving - counter --><i class="icon f7-icons if-not-md"><span class="badge color-blue serving-count2">' +
+        item.inOrder +
+        '</span></i><i class="icon material-icons md-only"><span class="badge color-blue serving-count2">' +
+        item.inOrder +
+        '</span></i></div><div class="item-inner"><div class="item-title-row"><div class="item-title">' +
+        item.name +
+        '</div><div class="item-after order-price">' +
+        (item.inOrder * item.price).toFixed(2) +
+        '€</div></div><div class="item-subtitle">' +
+        item.tab +
+        '</div></div><div class="swipeout-actions-right"><a href="#view-detailed-view" onclick="showLoading(0.8);loadDetailedView(' +
+        "'dontMatter'" +
+        "," +
+        "'orderscreen'" +
+        "," +
+        item.id +
+        ");app.tab.show(" +
+        "'#view-detailed-view'" +
+        ');" id="' +
+        item.id +
+        '" @click=${more}">Edit</a><a href="#" class="swipeout-delete" onclick="deleteDish(dishes[' +
+        (item.id - 1) +
+        ']);displayOrders();">Delete</a></div></div></li><li>';
+    });
+    //   //Update total
+    groupOrderTotalHtml.innerHTML = `<b>${groupOrderTotal.toFixed(2)} €</b>`;
+  }, 1000);
+
+  //Friends order items
+  setTimeout(() => {
+    here1.innerHTML += `<div class="block-title margin-top profile-block2">
+      <img
+        class="profile-image"
+        src="assets/Avatars2.png"
+        alt="image"
+      /><span>Luna</span>
+    </div>`;
+    friendsOrder1.forEach((item) => {
+      item.inOrder = 1;
+      groupOrderTotal += item.inOrder * item.price;
+      friend1OrderList.innerHTML +=
+        '<li class="swipeout swiper"><div class="item-content swipeout-content"><div class="item-media serving-counter"><!-- serving - counter --><i class="icon f7-icons if-not-md"><span class="badge color-blue serving-count2">' +
+        item.inOrder +
+        '</span></i><i class="icon material-icons md-only"><span class="badge color-blue serving-count2">' +
+        item.inOrder +
+        '</span></i></div><div class="item-inner"><div class="item-title-row"><div class="item-title">' +
+        item.name +
+        '</div><div class="item-after order-price">' +
+        (item.inOrder * item.price).toFixed(2) +
+        '€</div></div><div class="item-subtitle">' +
+        item.tab +
+        '</div></div><div class="swipeout-actions-right"><a href="#view-detailed-view" onclick="showLoading(0.8);loadDetailedView(' +
+        "'dontMatter'" +
+        "," +
+        "'orderscreen'" +
+        "," +
+        item.id +
+        ");app.tab.show(" +
+        "'#view-detailed-view'" +
+        ');" id="' +
+        item.id +
+        '" @click=${more}">Edit</a><a href="#" class="swipeout-delete" onclick="deleteDish(dishes[' +
+        (item.id - 1) +
+        ']);displayOrders();">Delete</a></div></div></li><li>';
+    });
+    //   //Update total
+    groupOrderTotalHtml.innerHTML = `<b>${groupOrderTotal.toFixed(2)} €</b>`;
+  }, 8000);
+
+  //Friends order items
+  setTimeout(() => {
+    here2.innerHTML += `<div class="block-title margin-top profile-block3">
+      <img
+        class="profile-image"
+        src="assets/Avatars4.png"
+        alt="image"
+      /><span>Jens</span>
+    </div>`;
+    friendsOrder2.forEach((item) => {
+      item.inOrder = 1;
+      groupOrderTotal += item.inOrder * item.price;
+      friend2OrderList.innerHTML +=
+        '<li class="swipeout swiper"><div class="item-content swipeout-content"><div class="item-media serving-counter"><!-- serving - counter --><i class="icon f7-icons if-not-md"><span class="badge color-blue serving-count2">' +
+        item.inOrder +
+        '</span></i><i class="icon material-icons md-only"><span class="badge color-blue serving-count2">' +
+        item.inOrder +
+        '</span></i></div><div class="item-inner"><div class="item-title-row"><div class="item-title">' +
+        item.name +
+        '</div><div class="item-after order-price">' +
+        (item.inOrder * item.price).toFixed(2) +
+        '€</div></div><div class="item-subtitle">' +
+        item.tab +
+        '</div></div><div class="swipeout-actions-right"><a href="#view-detailed-view" onclick="showLoading(0.8);loadDetailedView(' +
+        "'dontMatter'" +
+        "," +
+        "'orderscreen'" +
+        "," +
+        item.id +
+        ");app.tab.show(" +
+        "'#view-detailed-view'" +
+        ');" id="' +
+        item.id +
+        '" @click=${more}">Edit</a><a href="#" class="swipeout-delete" onclick="deleteDish(dishes[' +
+        (item.id - 1) +
+        ']);displayOrders();">Delete</a></div></div></li><li>';
+    });
+    //   //Update total
+    groupOrderTotalHtml.innerHTML = `<b>${groupOrderTotal.toFixed(2)} €</b>`;
+  }, 10000);
+  groupOrderButton.removeAttribute("onclick", "displayGroupOrder()");
+  viewGroupOrderButton.removeAttribute("onclick", "displayGroupOrder()");
+  viewGroupOrderButton2.removeAttribute("onclick", "displayGroupOrder()");
+  viewGroupOrderButton3.removeAttribute("onclick", "displayGroupOrder()");
 }
 
 //===================================================================TIC TAC TOE GAME=======================================================================

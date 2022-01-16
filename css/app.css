@@ -13,6 +13,10 @@
 
 /* Your app custom styles here */
 
+.group_add {
+  margin-right: 8px;
+}
+
 /* NAVIGATION-DRAWER SCREEN */
 .sidenav-title {
   margin-left: 60px;
@@ -136,18 +140,37 @@ hr {
   margin-right: -15px;
 }
 
+.buton-filter-container {
+  width: auto;
+  padding: 0px 26px;
+  padding-top: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#grouporder-button {
+  /* margin: 15px 0px 0px 30px; */
+  width: auto;
+  height: 35px;
+  background-color: var(--f7-card-bg-color);
+  color: #8e8e93;
+  font-size: 13.5px;
+  padding: 0px 15px;
+}
+
 /*style for past-orders button*/
 #filter-button {
   right: 0px;
-  margin: auto;
-  margin-right: 5vw;
+  color: #8e8e93;
+  --f7-touch-ripple-color: var(
+    --f7-link-touch-ripple-color,
+    rgba(var(--f7-theme-color-rgb), 0.25)
+  );
 }
-.right #filter-icon-on {
+#filter-icon-on {
   display: inline;
-}
-
-.right #filter-icon-off {
-  display: none;
 }
 
 /*style for order icon*/
@@ -162,8 +185,8 @@ hr {
 }
 
 /*style for serving-counter*/
-#serving-count1,
-#serving-count2 {
+.serving-count1,
+.serving-count2 {
   font-size: 18px;
   font-weight: lighter;
   color: rgba(0, 0, 0, 0.8);
@@ -172,7 +195,7 @@ hr {
   width: 29px;
   height: 27px;
   margin-top: 7px;
-  margin-left: -25px;
+  margin-left: -25px !important;
 }
 
 /*style for order-price*/
@@ -216,7 +239,9 @@ hr {
 #pay-button,
 #paylater-button,
 #add-button,
-#viewOrder-butto {
+#view-grouporder-button,
+#view-grouporder-button2,
+#view-grouporder-button3 {
   width: 92vw;
   position: fixed;
   bottom: 75px;
@@ -225,6 +250,12 @@ hr {
   left: 0;
   right: 0;
   margin: 0 auto;
+}
+
+#view-grouporder-button,
+#view-grouporder-button2,
+#view-grouporder-button3 {
+  display: none;
 }
 
 /*style for next-button on settings screen*/
@@ -262,7 +293,20 @@ hr {
 
 /*height of detailed-view image*/
 .picture-wrapper {
-  height: 50vh;
+  height: 45vh;
+  overflow: hidden;
+}
+
+.detailed-img {
+  position: absolute;
+  width: 100%;
+  height: auto;
+  top: 0px !important;
+  left: 0px !important;
+}
+
+.alter-height {
+  height: 100%;
 }
 
 /* DETAILED-VIEW SCREEN */
@@ -406,6 +450,7 @@ hr {
 /*Onboarding Screens*/
 
 /*Screen 1*/
+
 .page-onboarding {
   position: relative;
 }
@@ -457,6 +502,8 @@ hr {
 }
 .logo-container {
   flex: 1 1 auto;
+  z-index: 10;
+  vertical-align: middle;
 }
 
 .onboarding-title-image {
@@ -466,15 +513,32 @@ hr {
   transform: rotate(1.59deg);
 }
 
-/*.onboarding-splash {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  left: 0;
-  right: 0;
-  margin-left: auto;
-  margin-right: auto;
-}*/
+#splash {
+  position: fixed;
+  bottom: 3vh;
+  height: 80vh;
+  left: 5vw;
+  border-radius: 50%;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  -o-border-radius: 50%;
+}
+
+/* If width > 767px = change navbar height */
+@media only screen and (min-width: 767px) {
+  #splash {
+    position: fixed;
+    bottom: 4vh;
+    border-radius: 50%;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    -o-border-radius: 50%;
+    left: 0;
+    right: 0;
+    margin-right: auto;
+    margin-left: auto;
+  }
+}
 
 .onboarding-button {
   background: #3a3b38;
@@ -525,6 +589,31 @@ hr {
   -o-border-radius: 50%;
 }
 
+.profile-image {
+  margin-right: 20px;
+  height: 45px;
+  border-radius: 50%;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  -o-border-radius: 50%;
+}
+
+.profile-block1,
+.profile-block2,
+.profile-block3 {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  display: none;
+}
+
+.profile-block1 span,
+.profile-block2 span,
+.profile-block3 span {
+  flex: 1 1 auto;
+}
+
 /*diet cards on onboarding screen*/
 #allergy-cards {
   display: grid;
@@ -554,6 +643,15 @@ hr {
 
 .chip-outline {
   margin-bottom: 15px;
+}
+
+.chips-activated {
+  background-color: #9bac16;
+  color: var(--f7-chip-bg-color) !important;
+}
+
+.groupOrder-exp {
+  padding: 0px 20px;
 }
 
 .chip-container {
