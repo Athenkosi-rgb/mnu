@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<div class="page" data-name="homescreen">
+  <!-- Top Navbar -->
+  <div class="navbar">
+    <div class="navbar-bg"></div>
+    <div class="navbar-inner">
+      <div class="left">
+        <a href="#" class="link icon-only panel-open" data-panel="left">
+          <i class="icon f7-icons if-not-md">menu</i>
+          <i class="icon material-icons if-md">menu</i>
+        </a>
+      </div>
+      <div class="title">Home</div>
+      <div id="checkin" class="right" style="font-size: x-small"></div>
+    </div>
+  </div>
+
+  <!-- Scrollable page content-->
+  <div class="page-content">
+    <!-- Action Buttons Karen and DnD-->
+    <div class="block block-strong medium-inset">
+      <p>Want to talk to a person? Or don't want to be disturbed right now?</p>
+      <p class="row">
+        <button
+          class="col button button-large button-raised button-fill call-a-waiter"
+          onclick="changeButtonState('.call-a-waiter');"
+        >
+          Call a Waiter
+        </button>
+        <button
+          class="col button button-large button-raised button-fill dnd"
+          onclick="changeButtonState('.dnd');"
+        >
+          Do Not Disturb
+        </button>
+      </p>
+    </div>
+    <div id="prep"></div>
+    <!-- Restaurant Information Styled Card -->
+    <div class="card demo-card-header-pic">
+      <div
+        style="background-image: url(/assets/Restaurant.jpg)"
+        class="card-header align-items-flex-end"
+      >
+        Meritiamo un aumento
+      </div>
+      <div class="card-content card-content-padding">
+        <p>
+          Quisque eget vestibulum nulla. Quisque quis dui quis ex ultricies
+          efficitur vitae non felis. Phasellus quis nibh hendrerit...
+        </p>
+      </div>
+      <div class="card-footer">
+        <a href="#view-restaurant-info" class="tab-link">Read more</a>
+      </div>
+    </div>
+
+    <!-- Group Order stuff -->
+    <!-- Group Order Sheet1 -->
+    <div
+      class="sheet-modal my-sheet-swipe-to-close"
+      style="height: auto"
+      data-swipe-to-close="true"
+    >
+      <div class="sheet-modal-inner">
+        <div class="page-content">
+          <div class="block-title block-title-large">Create Group Order</div>
+          <div class="block groupOrder-exp">
+            <p>
+              We will use it to add items to your order. You will also pay for
+              everyone's orders.
+            </p>
+            <div class="list inset">
+              <ul>
+                <li class="item-content item-input">
+                  <div class="item-inner">
+                    <div class="item-input-wrap">
+                      <input
+                        id="groupOrder-name"
+                        type="text"
+                        placeholder="Your name"
+                      />
+                      <span class="input-clear-button"></span>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <p></p>
+            <a
+              class="button button-large button-fill sheet-open"
+              href="#"
+              data-sheet=".my-sheet2-swipe-to-close"
+              onclick="groupOrderName()"
+              >Create</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Group Order Sheet2 -->
+    <div
+      class="sheet-modal my-sheet2-swipe-to-close"
+      style="height: auto"
+      data-swipe-to-close="true"
+    >
+      <div class="sheet-modal-inner">
+        <div class="page-content">
+          <div class="block-title block-title-large groupOrder-name"></div>
+          <div class="block groupOrder-exp">
+            <p>
+              Share the link below to add friends to your order. Add dishes by
+              clicking the button below.
+            </p>
+            <div class="list inset">
+              <ul>
+                <li class="item-content item-input">
+                  <div class="item-inner">
+                    <a
+                      class="link"
+                      href="https://framework7.io/docs/installation"
+                      >https://framework7.io/docs/installation</a
+                    >
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <a
+              class="button button-large button-fill sheet-close"
+              href="#"
+              id="addToGroupOrder"
+              data-sheet=".my-sheet2-swipe-to-close"
+              onclick="groupOrder();showLoading(2)"
+              >Add to Group Order</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Group Order Sheet3 -->
+    <div
+      class="sheet-modal my-sheet3-swipe-to-close"
+      style="height: auto"
+      data-swipe-to-close="true"
+    >
+      <div class="sheet-modal-inner">
+        <div class="page-content">
+          <div class="block">
+            <p>Share the link below to add friends to your order.</p>
+            <div class="list inset">
+              <ul>
+                <li class="item-content item-input">
+                  <div class="item-inner">
+                    <a
+                      class="link"
+                      href="https://framework7.io/docs/installation"
+                      >https://framework7.io/docs/installation</a
+                    >
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <a
+              class="button button-large button-fill sheet-open"
+              href="#"
+              onclick="showLoading(1)"
+              id="shareGroupOrder"
+              data-sheet=".my-sheet-swipe-to-step"
+              >Invite Guests</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Group Order Sheet4 -->
+    <div
+      class="sheet-modal my-sheet-swipe-to-step"
+      style="height: auto"
+      data-swipe-to-close="true"
+      data-swipe-to-step="true"
+    >
+      <div class="sheet-modal-inner">
+        <div class="page-content">
+          <div class="sheet-modal-swipe-step">
+            <div class="flexible">
+              <div
+                class="block-title block-title-medium groupOrder-name3"
+              ></div>
+              <span
+                class="group_add-button sheet-open"
+                data-sheet=".my-sheet3-swipe-to-close"
+                ><i class="button icon material-icons if-md group_add-icon"
+                  >group_add</i
+                ></span
+              >
+            </div>
+            <!-- <hr /> -->
+            <div
+              class="display-flex padding justify-content-space-between align-items-center"
+            >
+              <div style="font-size: 18px">Group Order Total:</div>
+              <div style="font-size: 18px" id="groupOrderTotal">0.00 €</div>
+            </div>
+            <div
+              class="padding-horizontal padding-bottom"
+              onclick="cancelGroupOrder('yes')"
+            >
+              <a class="button button-large button-fill">Make Payment</a>
+              <div class="margin-top text-align-center">
+                Swipe up for more details
+              </div>
+            </div>
+          </div>
+          <!-- Group order items -->
+          <div id="groupOrder-list">
+            <div class="block-title margin-top profile-block1">
+              <img
+                class="profile-image"
+                src="assets/Avatars8.png"
+                alt="image"
+              /><span class="groupOrder-name2">Default (You)</span>
+            </div>
+            <!-- Your order items -->
+            <div class="list media-list inset">
+              <ul id="yourGroupOrder"></ul>
+            </div>
+
+            <div class="here1"></div>
+            <!-- Your Friends order items -->
+            <div class="list media-list inset">
+              <ul id="friend1GroupOrder"></ul>
+            </div>
+
+            <div class="here2"></div>
+            <!-- Your Friends order items -->
+            <div class="list media-list inset">
+              <ul id="friend2GroupOrder"></ul>
+            </div>
+          </div>
+
+          <div class="block" style="display: flex; justify-content: center">
+            <a href="#" class="link" onclick="cancelGroupOrder()"
+              >Cancel group Order?</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---------------------------- -->
+    <div class="block">
+      <a
+        class="button button-large button-fill sheet-open"
+        href="#"
+        data-sheet=".my-sheet-swipe-to-step"
+        id="view-grouporder-button2"
+        >View Group Order</a
+      >
+    </div>
+  </div>
+</div>
