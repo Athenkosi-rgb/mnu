@@ -55,7 +55,6 @@ let filter = true;
 
 //initialize app
 function init() {
-  console.log("init() called!");
   showAllergies();
   showDiets();
   displayOrders();
@@ -76,16 +75,14 @@ function init() {
   first = firstTime = firstGroupOrder = true;
 }
 
-//show bottom toolbar
-function showToolbar() {
-  console.log("showToolbar() called!");
-  document.getElementById("common-toolbar").style.display = "block";
-}
-
-//hide bottom toolbar
-function hideToolbar() {
-  console.log("hideToolbar() called!");
-  document.getElementById("common-toolbar").style.display = "none";
+function displayToolbar(a) {
+  if (a == 1) {
+    //show bottom toolbar
+    document.getElementById("common-toolbar").style.display = "block";
+  } else if (a == 0) {
+    //hide bottom toolbar
+    document.getElementById("common-toolbar").style.display = "none";
+  }
 }
 
 //expand past-orders accordian
@@ -106,7 +103,6 @@ let currentLink;
 
 //show tab menu in dish overview
 function displayMenuTabs() {
-  console.log("displayMenuTabs() called!");
   document.getElementById("menu-chips").innerHTML = ` `;
   menuTabs.forEach((menuTabs) => {
     document.getElementById(
@@ -138,18 +134,8 @@ function showDishes(tabName, tabLink) {
   currentLink = tabLink;
 
   isFirstTime();
-  dishes.forEach((dishes) => {
-    if (!!document.querySelector(`.d${dishes.id}`)) {
-      //addboxSheetOpen =
-      document.querySelector(`.d${dishes.id}`).classList.remove("sheet-open");
-      //addboxSwipeToStep =
-      document
-        .querySelector(`.d${dishes.id}`)
-        .removeAttribute("data-sheet", ".my-sheet-swipe-to-step");
-    }
-  });
+  addButtonSheetOpen(false);
 
-  console.log(`showDishes(${tabName},${tabLink})  called!`);
   //loads id's of different tabs
   dishes.forEach((dishes) => {
     if (dishes.tab === tabName) {
@@ -172,12 +158,10 @@ function showDishes(tabName, tabLink) {
       document.getElementById(tabLink).style.display = "block";
     }
   });
+
   //update contents of each tab to the according dishes, depending on if the filter is on or off
   if (filter) {
-    dishes.forEach((dishes, index) => {
-      console.log(compatibleDiet(dishes));
-      veganBan = dishes.dietCompatible[2] ? " vegan-banner" : "";
-
+    dishes.forEach((dishes) => {
       //filter on, only compatible food is displayed
       if (
         dishes.tab === tabName &&
@@ -185,26 +169,7 @@ function showDishes(tabName, tabLink) {
           .length == 0 &&
         compatibleDiet(dishes)
       ) {
-        document.getElementById(
-          "innertab"
-        ).innerHTML += `<div class="card demo-card-header-pic">            
-
-              <div id="${
-                dishes.id
-              }" href="#view-detailed-view" onclick="switchDish(${
-          dishes.id
-        });loadDetailedView('dishoverview')" style="background-image: url(${
-          dishes.imgSrc
-        });" class="card-header tab-link full-width align-items-flex-end ${veganBan}"> 
-              </div>        
-              <div class="card-content card-content-padding">
-                <p>${dishes.name}<span class="material-icons add_btns button d${
-          dishes.id
-        }" style="float: right;" onclick="addDish(dishes[${index}],'dishoverview');">add_box</span></p>
-                <p class="date">${dishes.price.toFixed(2)} €</p>                
-              </div>    
-            </div>
-           `;
+        printDishCard(dishes, 0);
       }
     });
 
@@ -215,37 +180,9 @@ function showDishes(tabName, tabLink) {
 
   //filter off, non-allergic food gets marked
   else {
-    dishes.forEach((dishes, index) => {
-      allergyWarner =
-        dishes.ingredients.filter((element) => allergyArray.includes(element))
-          .length != 0
-          ? " allergy-warning"
-          : "";
-      veganBan = dishes.dietCompatible[2] ? " vegan-banner" : "";
-
-      console.log(
-        `card-header tab-link full-width align-items-flex-end ${allergyWarner}`
-      );
+    dishes.forEach((dishes) => {
       if (dishes.tab === tabName) {
-        //Add allergy-warning class to indicate that allergy warning badge should be appended here
-
-        document.getElementById(
-          "innertab"
-        ).innerHTML += `<div class="card demo-card-header-pic">            
-         
-        <div id="${dishes.id}" href="#view-detailed-view" onclick="switchDish(${
-          dishes.id
-        });loadDetailedView('dishoverview')" style="background-image: url(${
-          dishes.imgSrc
-        });" class="card-header tab-link full-width align-items-flex-end ${allergyWarner} ${veganBan}"> 
-              </div>        
-              <div class="card-content card-content-padding">
-                <p>${dishes.name}<span class="material-icons add_btns button d${
-          dishes.id
-        }" style="float: right;" onclick="addDish(dishes[${index}],'dishoverview');">add_box</span></p>
-                <p class="date">${dishes.price.toFixed(2)} €</p>                
-              </div>    
-            </div>`;
+        printDishCard(dishes, 1);
       }
     });
 
@@ -260,36 +197,84 @@ function showDishes(tabName, tabLink) {
       "toggleFilter();showDishesFilter();showFilterPopup();"
     );
 
-  if (isGroupOrderActive()) {
-    dishes.forEach((dishes) => {
-      if (!!document.querySelector(`.d${dishes.id}`)) {
-        //addboxSheetOpen =
-        document.querySelector(`.d${dishes.id}`).classList.add("sheet-open");
-        //addboxSwipeToStep =
-        document
-          .querySelector(`.d${dishes.id}`)
-          .setAttribute("data-sheet", ".my-sheet-swipe-to-step");
-      }
-    });
-    groupOrder();
-  }
+  addButtonSheetOpen(true);
   allergyBadgeOverview();
   veganBanner();
 }
 
+function addButtonSheetOpen(a) {
+  if (a) {
+    if (isGroupOrderActive()) {
+      dishes.forEach((dishes) => {
+        if (!!document.querySelector(`.d${dishes.id}`)) {
+          //addboxSheetOpen =
+          document.querySelector(`.d${dishes.id}`).classList.add("sheet-open");
+          //addboxSwipeToStep =
+          document
+            .querySelector(`.d${dishes.id}`)
+            .setAttribute("data-sheet", ".my-sheet-swipe-to-step");
+        }
+      });
+      groupOrder();
+    }
+  } else if (!a) {
+    dishes.forEach((dishes) => {
+      if (!!document.querySelector(`.d${dishes.id}`)) {
+        //addboxSheetOpen =
+        document.querySelector(`.d${dishes.id}`).classList.remove("sheet-open");
+        //addboxSwipeToStep =
+        document
+          .querySelector(`.d${dishes.id}`)
+          .removeAttribute("data-sheet", ".my-sheet-swipe-to-step");
+      }
+    });
+  }
+}
+
+function printDishCard(dishes, warning) {
+  //Allergy warning badge
+  allergyWarner =
+    dishes.ingredients.filter((element) => allergyArray.includes(element))
+      .length != 0
+      ? " allergy-warning"
+      : "";
+  //Vegan warning badge
+  veganBan = dishes.dietCompatible[2] ? " vegan-banner" : "";
+
+  if (warning == 0) {
+    bannerString = `${veganBan}`;
+  } else if (warning == 1) {
+    //Add allergy-warning class to indicate that allergy warning badge should be appended here
+    bannerString = `${allergyWarner} ${veganBan}`;
+  }
+  document.getElementById(
+    "innertab"
+  ).innerHTML += `<div class="card demo-card-header-pic">            
+
+      <div id="${dishes.id}" href="#view-detailed-view" onclick="switchDish(${
+    dishes.id
+  });loadDetailedView('dishoverview')" style="background-image: url(${
+    dishes.imgSrc
+  });" class="card-header tab-link full-width align-items-flex-end ${bannerString}"> 
+      </div>        
+      <div class="card-content card-content-padding">
+        <p>${dishes.name}<span class="material-icons add_btns button d${
+    dishes.id
+  }" style="float: right;" onclick="addDish(dishes[${
+    dishes.id - 1
+  }],'dishoverview');">add_box</span></p>
+        <p class="date">${dishes.price.toFixed(2)} €</p>                
+      </div>    
+    </div>
+   `;
+}
+
 //toggle Filter for dishes
 function toggleFilter() {
-  console.log("toggleFilter() called!");
   filter = filter ? false : true;
-  console.log("filter = ", filter);
   document.getElementById("filter-icon-on").innerHTML = filter
     ? "filter_list"
     : "filter_list_off";
-
-  console.log(
-    "document.getElementById('filter-icon-on').innerHTML = ",
-    document.getElementById("filter-icon-on").innerHTML
-  );
 }
 
 //filter explanation alert that appears the first time you click on "menu", if you have filters activated
@@ -317,7 +302,6 @@ function showFilterPopup() {
 
 //load allergy items into app
 function showAllergies() {
-  console.log("showAllergies() called!");
   document.getElementById("allergy-cards").innerHTML = ` `;
   document.getElementById("allergy-cards-settings").innerHTML = ` `;
 
@@ -341,7 +325,6 @@ function showAllergies() {
 
 //load diet cards into app
 function showDiets() {
-  console.log("showDiets() called!");
   document.getElementById("diet-cards").innerHTML = ``;
   document.getElementById("diet-cards-settings").innerHTML = ``;
   diet.forEach((diet) => {
@@ -366,9 +349,6 @@ var allergyArray = [];
 var dietArray = [false, false, false, false, false, false, false];
 //switch Allergy status and picture in onboarding and settings
 function switchAllergy(allergy, allergysettings, imageSrc) {
-  console.log(allergy);
-
-  console.log("switchAllergy(allergy, imageSrc)   called!");
   var img = document.getElementById(allergy).src;
   var imgSettings = document.getElementById(allergysettings).src;
   //switch for onboarding
@@ -399,15 +379,6 @@ function switchAllergy(allergy, allergysettings, imageSrc) {
 
 //switch Diet status and picture in onboarding and settings
 function switchDiet(dietN, dietNsettings, imageSrc) {
-  console.log(
-    "switchDiet(" +
-      dietN +
-      ", " +
-      imageSrc +
-      ") called! That is the diet with index: " +
-      diet.findIndex((item) => item.name == dietN)
-  );
-
   //track Selected Diets in dietArray
   var dietIndex = diet.findIndex((item) => item.name == dietN);
   dietArray[dietIndex] = !dietArray[dietIndex];
@@ -434,7 +405,6 @@ function compatibleDiet(ingredientDiet) {
   noDietCollision = true;
 
   for (let i = 0; i < dietArray.length; i++) {
-    //console.log( "It is " + dietArray[i] + " that i am " + diet[i].name +". It is " +ingredientDiet.dietCompatible[i] +" , that " +ingredientDiet.name +" matches the diet");
     if (noDietCollision && dietArray[i] && !ingredientDiet.dietCompatible[i]) {
       noDietCollision = false;
       break;
@@ -478,7 +448,6 @@ function veganBanner() {
 
 //load order contents into order-list
 function displayOrders() {
-  console.log("displayOrders() called!");
   let orderList = document.getElementById("order-list");
   let orderButton = document.getElementById("order-button");
   let orderItems = localStorage.getItem("dishesInOrder");
@@ -580,7 +549,6 @@ function displayOrders() {
 
 //ORDER OVERVIEW: load display overview page contents
 function displayOverview() {
-  console.log("displayOverview()  called!");
   let overviewPage = document.getElementById("overview");
   let orderItems = localStorage.getItem("dishesInOrder");
 
@@ -643,7 +611,6 @@ function displayOverview() {
 
 //set/add dish to local storage
 function setItems(dish, from) {
-  console.log("setItems(dish, from) called!");
   let orderItems = localStorage.getItem("dishesInOrder");
   let orderHistoryItems = localStorage.getItem("orderHistory");
   let pastOrdersItems = localStorage.getItem("pastOrders");
@@ -806,7 +773,6 @@ function updatePastOrderTotal() {
 
 //delete dish from order: wrapper
 function deleteDish(dish) {
-  console.log("deleteDish(dish) called!");
   let orderItems = localStorage.getItem("dishesInOrder");
   orderItems = JSON.parse(orderItems);
 
@@ -838,8 +804,6 @@ function deleteDish(dish) {
 
 //add dish to order: wrapper
 function addDish(dish, from) {
-  console.log("addDish(dish) called!");
-
   if (from == "dishoverview") {
     //from dishoverview
     if (isGroupOrderActive()) {
@@ -871,7 +835,6 @@ function addDish(dish, from) {
 
 //load orders to:pastOrders/orderHistory
 function loadTo(to) {
-  console.log("loadTo() called!");
   let orderHistoryList = document.getElementById("orderHistory-list");
   let pastOrdersList = document.getElementById("pastOrders-list");
   let orderItems = localStorage.getItem("dishesInOrder");
@@ -1307,7 +1270,6 @@ function displayGroupOrder() {
 //load unique detailed-view based on card clicked in dishoverview
 
 function loadDetailedView(from) {
-  console.log("loadDetailedView(plate) called!");
   let detailedViewImg = document.querySelector(".detailed-img");
   let detailedViewTitle = document.querySelector(".detailed-title");
   let detailedViewDesc = document.querySelector(".detailed-desc");
@@ -1359,17 +1321,9 @@ function loadDetailedView(from) {
     back_link.href = "#view-order";
 
     for (j = 0; j < selectedDish.id; j++) {
-      console.log("selectedDish.id = ", selectedDish.id);
       if (orderedDishes[j + 1] != null) {
-        console.log(
-          "orderedDishes[j + 1] != null : ",
-          orderedDishes[j + 1] != null
-        );
         if (selectedDish.id == parseInt(orderedDishes[j + 1].id)) {
           app.stepper.setValue("#steppy", orderedDishes[j + 1].inOrder);
-          console.log(
-            `${selectedDish.id} === ${parseInt(orderedDishes[j + 1].id)}`
-          );
           // add-to-order button
           updateDetailedPrice(orderedDishes[j + 1], "orderscreen");
           orderedDish = orderedDishes[j + 1];
@@ -1398,7 +1352,6 @@ function loadDetailedView(from) {
 //Add ingredient list to detailed view
 function addIngredientList(dish) {
   let ingredientString = "";
-  console.log("Added to list:" + ingredientString);
   dish.ingredients.forEach((ingredient) => {
     ingredientString += "<li>" + ingredient + "</li>";
   });
@@ -1427,7 +1380,6 @@ function addOns(dish) {
 
 //update price on "add-to-order" button as stepper is increased/decreased
 function updateDetailedPrice(dish, from) {
-  console.log("updateDetailedPrice() called!");
   let addToOrderBtn = document.querySelector(".detailedBtn-block");
 
   stpValueInt = app.stepper.getValue("#steppy");
@@ -1463,41 +1415,21 @@ function updateDetailedPrice(dish, from) {
 
 //display payment screen with relevant order summary
 function displayPayment(from) {
-  console.log("displayPayment() called!");
   let paymentList = document.querySelector(".payment-card");
   let pastPaymentList = document.querySelector(".past-payment-card");
-  let paymentPrice = document.querySelector(".payment-price");
   let pastOrdersInner = document.querySelector(".pastOrders-inner");
-  let paymentButton = document.querySelector("#confirm-button");
   let orderItems = localStorage.getItem("dishesInOrder");
   let pastOrderItems = localStorage.getItem("pastOrders");
 
   orderItems = JSON.parse(orderItems);
   pastOrderItems = JSON.parse(pastOrderItems);
-  paymentList.innerHTML = "";
-  paymentPrice.innerHTML = "";
-  pastPaymentList.innerHTML = "";
 
-  paymentButton.removeAttribute(
-    "onclick",
-    'showLoading(1);app.tab.show("#view-homescreen");setItems("doesntMatter", "paymentScreen");deleteDish("All");loadTo("orderHistory");displayOrders();'
-  );
-  paymentButton.removeAttribute(
-    "onclick",
-    'showLoading(1);app.tab.show("#view-homescreen");setItems("doesntMatter", "pastOrders");deleteDish("pastOrders");loadTo("orderHistory");displayOrders();'
-  );
+  paymentButtonOnclick("remove");
 
   if (from == "order") {
     //hide pastOrders summary
     pastOrdersInner.style.display = "none";
-
-    Object.values(orderItems).map((item) => {
-      paymentList.innerHTML += `<span class="dish">${
-        item.name
-      }(x${item.inOrder})</span><span class="price">${(item.inOrder * item.price).toFixed(
-        2
-      )} €</span><br />`;
-    });
+    printOrderSummary(orderItems, paymentList);
 
     if (pastOrderItems) {
       //hide pastOrders summary
@@ -1507,40 +1439,72 @@ function displayPayment(from) {
         if (key > 1) {
           pastPaymentList.innerHTML += `<hr>`;
         }
-        Object.entries(value).forEach(([key, item]) => {
-          pastPaymentList.innerHTML += `<span class="dish">${
-            item.name
-          }(x${item.inOrder})</span><span class="price">${(item.inOrder * item.price).toFixed(
-            2
-          )} €</span><br />`;
-        });
+        printOrderSummary(value, pastPaymentList);
       });
     }
 
-    paymentPrice.innerHTML += `${(
-      updateOrderTotal() + updatePastOrderTotal()
-    ).toFixed(2)} €`;
-    paymentButton.setAttribute(
-      "onclick",
-      "showLoading(1);app.tab.show('#view-homescreen');setItems('doesntMatter', 'paymentScreen');deleteDish('All');deleteDish('pastOrders');loadTo('orderHistory');displayOrders();"
-    );
+    printPaymentPrice(from);
+    paymentButtonOnclick("set", 1);
   } else if (from == "pastOrders") {
     //hide pastOrders summary
     pastOrdersInner.style.display = "none";
 
     Object.entries(pastOrderItems).forEach(([key, value]) => {
-      Object.entries(value).forEach(([key, item]) => {
-        paymentList.innerHTML += `<span class="dish">${
-          item.name
-        }(x${item.inOrder})</span><span class="price">${(item.inOrder * item.price).toFixed(
-          2
-        )} €</span><br />`;
-      });
+      printOrderSummary(value, pastPaymentList);
     });
+    printPaymentPrice(from);
+    paymentButtonOnclick("set", 2);
+  }
+}
+
+function printPaymentPrice(from) {
+  let paymentPrice = document.querySelector(".payment-price");
+  paymentPrice.innerHTML = "";
+
+  if (from == "order") {
+    paymentPrice.innerHTML += `${(
+      updateOrderTotal() + updatePastOrderTotal()
+    ).toFixed(2)} €`;
+  } else if (from == "pastOrders") {
     paymentPrice.innerHTML += `${updatePastOrderTotal().toFixed(2)} €`;
-    paymentButton.setAttribute(
+  }
+}
+
+function printOrderSummary(items, list) {
+  list.innerHTML = "";
+
+  Object.entries(items).forEach(([key, item]) => {
+    list.innerHTML += `<span class="dish">${item.name} (x${
+      item.inOrder
+    })</span><span class="price">${(item.inOrder * item.price).toFixed(
+      2
+    )} €</span><br />`;
+  });
+}
+
+function paymentButtonOnclick(action, variation) {
+  let paymentButton = document.querySelector("#confirm-button");
+
+  if (action == "set") {
+    if (variation == 1) {
+      paymentButton.setAttribute(
+        "onclick",
+        "showLoading(1);app.tab.show('#view-homescreen');setItems('doesntMatter', 'paymentScreen');deleteDish('All');deleteDish('pastOrders');loadTo('orderHistory');displayOrders();"
+      );
+    } else if (variation == 2) {
+      paymentButton.setAttribute(
+        "onclick",
+        "showLoading(1);app.tab.show('#view-homescreen');setItems('doesntMatter', 'pastOrders');deleteDish('pastOrders');loadTo('orderHistory');displayOrders();"
+      );
+    }
+  } else if (action == "remove") {
+    paymentButton.removeAttribute(
       "onclick",
-      "showLoading(1);app.tab.show('#view-homescreen');setItems('doesntMatter', 'pastOrders');deleteDish('pastOrders');loadTo('orderHistory');displayOrders();"
+      'showLoading(1);app.tab.show("#view-homescreen");setItems("doesntMatter", "paymentScreen");deleteDish("All");loadTo("orderHistory");displayOrders();'
+    );
+    paymentButton.removeAttribute(
+      "onclick",
+      'showLoading(1);app.tab.show("#view-homescreen");setItems("doesntMatter", "pastOrders");deleteDish("pastOrders");loadTo("orderHistory");displayOrders();'
     );
   }
 }
@@ -1549,7 +1513,6 @@ function displayPayment(from) {
 
 //change "call-a-waiter"/"d-n-d" button state after clicked
 function changeButtonState(button) {
-  console.log("changeButtonState(button) called!");
   let btn = document.querySelector(button);
   let pressed = btn.style.backgroundColor === "red";
 
@@ -1606,7 +1569,6 @@ function changeButtonState(button) {
 
 //show check-in status on homescreen
 function showCheckIn() {
-  console.log("showCheckIn()called!");
   document.getElementById("checkin").innerHTML = `
   Checked into table 4
   `;
@@ -1615,7 +1577,6 @@ function showCheckIn() {
 //========================================================FAVOURITE STUFF=======================================================================================================================================
 
 function showDetailedHeader() {
-  console.log("showDetailedHeader() called!");
   //access the favourite boolean of the currently selected channel.
   document.querySelector(".favourite-button").innerHTML = selectedDish.favourite
     ? "favorite"
@@ -1624,7 +1585,6 @@ function showDetailedHeader() {
 
 // Toggles favourite property of dish and displays dish accordingly in panel
 function favouriteDish() {
-  console.log("favouriteDish() called!");
   selectedDish.favourite = selectedDish.favourite ? false : true;
   dishes.forEach((dish) => {
     if (dish.id == selectedDish.id) {
@@ -1639,14 +1599,12 @@ function favouriteDish() {
 }
 
 function displaySelected() {
-  console.log("displaySelected() called!");
   const favouriteList = document.getElementById("favourites-list");
   favouriteList.innerHTML = ""; // making sure that there is no content inside these two lists
   let notFavourite = 0;
 
   //The code below takes the empty favourite list, and loads the dishes into this list
   dishes.forEach((dish) => {
-    console.log(`dish.favourite: `, dish.favourite);
     if (dish.favourite) {
       favouriteList.innerHTML += `<li>
       <div class="item-content">
@@ -1680,15 +1638,11 @@ function displaySelected() {
       notFavourite++;
     }
   });
-  console.log(
-    `There are ${dishes.length - notFavourite} favourite dishes in total!`
-  );
 
   if (dishes.length - notFavourite == 0) {
     /* if there are no favourite dishes */
     favouriteList.innerHTML = ``;
     favouriteList.innerHTML = "Favourite dishes go here!";
-    console.log(`There are no favourite dishes!`);
   }
 
   //always add selected class to current dish
@@ -1698,11 +1652,7 @@ function displaySelected() {
 }
 
 function switchDish(selectedDishID) /*dish in detailed view.*/ {
-  console.log("switchDish() called!");
-  console.log(` selected dish ID = "${selectedDishID}"`);
   if (!!selectedDish) {
-    console.log(`It is ${!!selectedDish} that the selectedDish exists`);
-    console.log(`selectedDish.id: ${selectedDish.id}`);
     if (!!document.getElementById(selectedDish.id)) {
       document.getElementById(selectedDish.id).classList.remove("selected");
     }
@@ -1739,7 +1689,7 @@ function checkout() {
       "Unable to checkout"
     );
   } else {
-    hideToolbar();
+    displayToolbar(0);
     showLoading(1);
     deleteDish("All");
     displayOrders();
@@ -1816,7 +1766,7 @@ const WINNING_COMBINATIONS = [
 let circleTurn;
 
 function startGame() {
-  hideToolbar();
+  displayToolbar(0);
   //======================================================================
   const cellElements = document.querySelectorAll("[data-cell]");
   const winningMessageElement = document.getElementById("winningMessage");
