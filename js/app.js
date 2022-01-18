@@ -1494,7 +1494,7 @@ function displayPayment(from) {
     Object.values(orderItems).map((item) => {
       paymentList.innerHTML += `<span class="dish">${
         item.name
-      } x(${item.inOrder})</span><span class="price">${(item.inOrder * item.price).toFixed(
+      }(x${item.inOrder})</span><span class="price">${(item.inOrder * item.price).toFixed(
         2
       )} €</span><br />`;
     });
@@ -1510,7 +1510,7 @@ function displayPayment(from) {
         Object.entries(value).forEach(([key, item]) => {
           pastPaymentList.innerHTML += `<span class="dish">${
             item.name
-          } x(${item.inOrder})</span><span class="price">${(item.inOrder * item.price).toFixed(
+          }(x${item.inOrder})</span><span class="price">${(item.inOrder * item.price).toFixed(
             2
           )} €</span><br />`;
         });
@@ -1532,7 +1532,7 @@ function displayPayment(from) {
       Object.entries(value).forEach(([key, item]) => {
         paymentList.innerHTML += `<span class="dish">${
           item.name
-        } x(${item.inOrder})</span><span class="price">${(item.inOrder * item.price).toFixed(
+        }(x${item.inOrder})</span><span class="price">${(item.inOrder * item.price).toFixed(
           2
         )} €</span><br />`;
       });
