@@ -1059,6 +1059,8 @@ function groupOrder() {
   let groupOrderName = document.querySelector("#groupOrder-name");
   let groupOrderButton = document.querySelector("#grouporder-button");
   let orderButton = document.querySelector("#order-button");
+  let inviteGuestsButton = document.querySelector("#shareGroupOrder");
+  let createGroupButton = document.querySelector("#groupOrderCreate");
   let viewGroupOrderButton = document.querySelector("#view-grouporder-button");
   let viewGroupOrderButton2 = document.querySelector(
     "#view-grouporder-button2"
@@ -1078,6 +1080,8 @@ function groupOrder() {
   viewGroupOrderButton.setAttribute("onclick", "displayGroupOrder()");
   viewGroupOrderButton2.setAttribute("onclick", "displayGroupOrder()");
   viewGroupOrderButton3.setAttribute("onclick", "displayGroupOrder()");
+  inviteGuestsButton.setAttribute("onclick", "shareOrderLink()");
+  createGroupButton.setAttribute("onclick", "shareOrderLink()");
   orderButton.style.display = "none";
   viewGroupOrderButton.style.display =
     viewGroupOrderButton2.style.display =
@@ -1088,6 +1092,21 @@ function groupOrder() {
     firstGroupOrder = false;
     showDishes(currentTab, currentLink);
     activateChips(currentTab);
+  }
+}
+
+function shareOrderLink() {
+  if (navigator.share) {
+    navigator
+      .share({
+        title: "Menu App",
+        text: "Join my MeNu order from Meritiamo un aumento",
+        url: "https://framework7.io/docs/installation",
+      })
+      .then(() => console.log("Successful share"))
+      .catch((error) => console.log("Error sharing", error));
+  } else {
+    console.log("Web Share API is not supported in your browser.");
   }
 }
 
