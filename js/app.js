@@ -50,10 +50,10 @@ $("body").click(function () {
 });
 
 //========================================================GLOBAL STUFF=======================================================================================================================================
-
-let filter = true;
+let selectedDish;
 
 //initialize app
+userOnboarding();
 function init() {
   showAllergies();
   showDiets();
@@ -71,6 +71,7 @@ function init() {
 
   //default
   selectedDish = dishes[0];
+
   console.log(`selectedDish = ${dishes[0]}`);
   first = firstTime = firstGroupOrder = true;
 }
@@ -93,6 +94,39 @@ function expand() {
     document.getElementById("accordian-icon").innerHTML = "expand_more";
   } else {
     document.getElementById("accordian-icon").innerHTML = "expand_less";
+  }
+}
+
+let filter = true;
+
+function userOnboarding() {
+  let userOnboarding = localStorage.getItem("displayOnboarding");
+  userOnboarding = JSON.parse(userOnboarding);
+  if (userOnboarding != null && userOnboarding == false) {
+    document.getElementById("view-home").innerHTML = ` `;
+    document.getElementById(
+      "view-home"
+    ).innerHTML = `<div class="page" data-name="preorder">
+    <div class="block-title block-title-medium text-align-center">Welcome!</div>
+  
+    <div class="page-content">
+      <!--buttons for preordering and scanning qr code-->
+      <div class="button-container">
+        <a
+          href=""
+          class="button button-raised button-fill buttons-preorder tab-link qr-code"
+          onclick="init();displayMenuTabs();displayToolbar(1);app.dialog.alert('You are checked in at table 4','Successfully checked in'); showCheckIn(); app.tab.show('#view-homescreen');"
+          style="background-image: url(assets/qr-code.png)"
+        ></a>
+  
+        <a href="" class="button button-raised button-fill buttons-preorder"
+          >Preorder</a
+        >
+      </div>
+    </div>
+  </div>`;
+  } else {
+    localStorage.setItem("displayOnboarding", false);
   }
 }
 
@@ -472,7 +506,7 @@ function displayOrders() {
         '</span></i></div><div class="item-inner"><div class="item-title-row"><div class="item-title">' +
         item.name +
         '</div><div class="item-after order-price">' +
-        (item.inOrder * item.price).toFixed(2) +
+        (item.inOrder * item.price + addOnsPrice(item)).toFixed(2) +
         '€</div></div><div class="item-subtitle">' +
         item.tab +
         '</div></div><div class="swipeout-actions-right"><a href="#view-detailed-view" onclick="switchDish(' +
@@ -749,7 +783,7 @@ function updateOrderTotal() {
 
   if (orderItems != null) {
     Object.values(orderItems).map((item) => {
-      subTotal += item.inOrder * item.price;
+      subTotal += item.inOrder * item.price + addOnsPrice(item);
     });
   }
   return subTotal;
@@ -764,7 +798,7 @@ function updatePastOrderTotal() {
   if (pastOrdersItems != null) {
     Object.entries(pastOrdersItems).forEach(([key, value]) => {
       Object.entries(value).forEach(([key, item]) => {
-        totalPastOrders += item.inOrder * item.price;
+        totalPastOrders += item.inOrder * item.price + addOnsPrice(item);
       });
     });
   }
@@ -1288,8 +1322,7 @@ function loadDetailedView(from) {
   detailedViewImg.src = `${selectedDish.imgSrc}`;
   detailedViewTitle.innerHTML = `${selectedDish.name}`;
   detailedViewDesc.innerHTML = `${selectedDish.description}`;
-  ingredientAccordion.innerHTML = addIngredientList(selectedDish);
-  addOnsList.innerHTML = addOns(selectedDish);
+  ingredientAccordion.innerHTML = addIngredientList();
   allergyWarning.style.display =
     selectedDish.ingredients.filter((element) => allergyArray.includes(element))
       .length == 0
@@ -1300,11 +1333,12 @@ function loadDetailedView(from) {
 
   if (from == "dishoverview") {
     app.stepper.setValue("#steppy", 1);
+    resetCheckboxes();
 
     //load rest of elements on page: using data from local storage
     back_link.href = "";
     back_link.href = "#view-dishoverview";
-
+    addOnsList.innerHTML = addOns(selectedDish);
     //add-to-order button
     updateDetailedPrice("dontMatter", "dishoverview");
 
@@ -1324,6 +1358,7 @@ function loadDetailedView(from) {
       if (orderedDishes[j + 1] != null) {
         if (selectedDish.id == parseInt(orderedDishes[j + 1].id)) {
           app.stepper.setValue("#steppy", orderedDishes[j + 1].inOrder);
+          addOnsList.innerHTML = addOns(selectedDish);
           // add-to-order button
           updateDetailedPrice(orderedDishes[j + 1], "orderscreen");
           orderedDish = orderedDishes[j + 1];
@@ -1334,7 +1369,6 @@ function loadDetailedView(from) {
           stepperUp.addEventListener("click", () => {
             updateDetailedPrice(orderedDish, "orderscreen");
           });
-          return;
         }
       }
     }
@@ -1350,9 +1384,9 @@ function loadDetailedView(from) {
 }
 
 //Add ingredient list to detailed view
-function addIngredientList(dish) {
+function addIngredientList() {
   let ingredientString = "";
-  dish.ingredients.forEach((ingredient) => {
+  selectedDish.ingredients.forEach((ingredient) => {
     ingredientString += "<li>" + ingredient + "</li>";
   });
   return ingredientString;
@@ -1361,31 +1395,173 @@ function addIngredientList(dish) {
 //Add "Add-Ons" list to detailed view
 function addOns(dish) {
   let addOnString = "";
-  dish.addOns.forEach((addOn) => {
-    addOnString += `<li>
-    <label class="item-checkbox item-content">
-      <input type="checkbox" name="demo-checkbox" value="Books" />
-      <i class="icon icon-checkbox"></i>
-      <div class="item-inner">
-        <div class="item-title-row">
-          <div class="item-title">${addOn}</div>
-        </div>
-        <div class="item-subtitle">0,70 €</div>
-      </div>
-    </label>
-  </li>`;
+
+  dish.addOns.forEach((addOn, i) => {
+    console.log(`checking: ${addOn.name}.added = `, addOn.added);
+    if (addOn.added == true) {
+      addOnString +=
+        '<li><label class="item-checkbox item-content"><input type="checkbox" name="demo-checkbox" id="checkbox' +
+        i +
+        '"  onchange="checkAddOn(' +
+        "'" +
+        addOn.name +
+        "'" +
+        ')" checked="true"><i class="icon icon-checkbox"></i><div class="item-inner"><div class="item-title-row"><div class="item-title">' +
+        addOn.name +
+        '</div></div><div class="item-subtitle">' +
+        addOn.price +
+        " €</div></div></label></li>";
+      console.log(addOnString);
+    } else {
+      addOnString +=
+        '<li><label class="item-checkbox item-content"><input type="checkbox" name="demo-checkbox" id="checkbox' +
+        i +
+        '"  onchange="checkAddOn(' +
+        "'" +
+        addOn.name +
+        "'" +
+        ')"><i class="icon icon-checkbox"></i><div class="item-inner"><div class="item-title-row"><div class="item-title">' +
+        addOn.name +
+        '</div></div><div class="item-subtitle">' +
+        addOn.price +
+        " €</div></div></label></li>";
+    }
   });
   return addOnString;
+}
+
+//increment/decrement total based on addOns
+function addOnsPrice(dish) {
+  console.log(
+    "==============================================addOnsPrice() called!=============================================="
+  );
+  let checkedItems = localStorage.getItem("addOnsChecked");
+  checkedItems = JSON.parse(checkedItems);
+  let addOnsPrice = 0;
+
+  console.log("let addOnsPrice = ", addOnsPrice);
+  dish.addOns.forEach((addOn) => {
+    if (checkedItems != null) {
+      if (checkedItems[`${dish.id}_${addOn.name}`] == undefined) {
+        checkedItems = {
+          ...checkedItems,
+          [`${dish.id}_${addOn.name}`]: addOn,
+        };
+        if (checkedItems[`${dish.id}_${addOn.name}`].added == true) {
+          if (addOn.name.includes("no")) {
+            //if the word contains extra - add to total
+            addOnsPrice -= addOn.price;
+          } else {
+            //else if it contains no - decrement total
+            addOnsPrice += addOn.price;
+          }
+        } else {
+          addOnsPrice += 0;
+        }
+      } else {
+        if (checkedItems[`${dish.id}_${addOn.name}`].added == true) {
+          if (addOn.name.includes("no")) {
+            //if the word contains extra - add to total
+            addOnsPrice -= addOn.price;
+          } else {
+            //else if it contains no - decrement total
+            addOnsPrice += addOn.price;
+          }
+        } else {
+          addOnsPrice += 0;
+        }
+      }
+    }
+  });
+  console.log("return value =", addOnsPrice);
+  return addOnsPrice;
+}
+
+function resetCheckboxes() {
+  console.log(
+    "==================================================resetCheckboxes() called================================================"
+  );
+  let checkedItems = localStorage.getItem("addOnsChecked");
+  let orderItems = localStorage.getItem("dishesInOrder");
+
+  orderItems = JSON.parse(orderItems);
+  checkedItems = JSON.parse(checkedItems);
+
+  dishes.forEach((dish) => {
+    if (orderItems != null) {
+      if (orderItems[dish.id] === null) {
+        console.log("not it order, get rid of it!!");
+        dish.addOns.forEach((addOn) => {
+          addOn.added = false;
+          if (checkedItems != null) {
+            if (checkedItems[`${dish.id}_${addOn.name}`] == undefined) {
+              checkedItems = {
+                ...checkedItems,
+                [`${dish.id}_${addOn.name}`]: addOn,
+              };
+            } else {
+              checkedItems[`${dish.id}_${addOn.name}`].added = false;
+            }
+          }
+          localStorage.setItem("addOnsChecked", JSON.stringify(checkedItems));
+        });
+      }
+    }
+  });
+}
+
+function checkAddOn(checkedAddOnName) {
+  console.log(
+    "==============================================checkAddOn() called!=============================================="
+  );
+  let checkedItems = localStorage.getItem("addOnsChecked");
+  checkedItems = JSON.parse(checkedItems);
+
+  selectedDish.addOns.forEach((addOn, i) => {
+    console.log(`checking addOn[${i}]:`);
+    if (addOn.name == checkedAddOnName) {
+      console.log(`${addOn.name} == ${checkedAddOnName}`);
+      addOn.added = addOn.added ? false : true;
+      if (checkedItems != null) {
+        if (checkedItems[`${selectedDish.id}_${addOn.name}`] == undefined) {
+          checkedItems = {
+            ...checkedItems,
+            [`${selectedDish.id}_${addOn.name}`]: addOn,
+          };
+        } else {
+          checkedItems[`${selectedDish.id}_${addOn.name}`].added = addOn.added;
+        }
+      } else {
+        checkedItems = {
+          [`${selectedDish.id}_${addOn.name}`]: addOn,
+        };
+      }
+    } else {
+      console.log(`${addOn.name} /= ${checkedAddOnName}`);
+    }
+    localStorage.setItem("addOnsChecked", JSON.stringify(checkedItems));
+  });
+  if (
+    document.getElementById("add-button").innerHTML.slice(0, 12) ==
+    "Add to order"
+  ) {
+    updateDetailedPrice(selectedDish, "dishoverview");
+  } else {
+    updateDetailedPrice(selectedDish, "orderscreen");
+  }
 }
 
 //update price on "add-to-order" button as stepper is increased/decreased
 function updateDetailedPrice(dish, from) {
   let addToOrderBtn = document.querySelector(".detailedBtn-block");
+  let buttonPrice = 0;
 
   stpValueInt = app.stepper.getValue("#steppy");
 
   if (from == "dishoverview") {
-    let buttonPrice = parseFloat(selectedDish.price * stpValueInt);
+    buttonPrice = parseFloat(
+      selectedDish.price * stpValueInt + addOnsPrice(selectedDish)
+    );
     //add-to-order button
     addToOrderBtn.innerHTML = `<div class="block">
       <a
@@ -1397,17 +1573,29 @@ function updateDetailedPrice(dish, from) {
       </a>
     </div>`;
   } else if (from == "orderscreen") {
-    let buttonPrice = parseFloat(dish.price * stpValueInt);
+    buttonPrice = parseFloat(
+      dish.price * stpValueInt + addOnsPrice(selectedDish)
+    );
     // add-to-order button
-    addToOrderBtn.innerHTML = `<div class="block">
+    if (stpValueInt == 0) {
+      addToOrderBtn.innerHTML = `<div class="block">
         <a
-          onclick="addDish(dishes[${dish.id - 1}],'orderscreen');"
-          href="#view-dishoverview"
+          onclick="showLoading(1);deleteDish(dishes[${selectedDish.id - 1}]);"
+          href="#view-order"
           class="col button button-large button-fill button-raised tab-link"
           id="add-button"
-          >Update Order - ${buttonPrice.toFixed(2)} €
-        </a>
-      </div>`;
+          >Delete Dish</a></div>`;
+    } else {
+      addToOrderBtn.innerHTML = `<div class="block">
+    <a
+      onclick="addDish(dishes[${dish.id - 1}],'orderscreen');"
+      href="#view-dishoverview"
+      class="col button button-large button-fill button-raised tab-link"
+      id="add-button"
+      >Update Order • ${buttonPrice.toFixed(2)} €
+    </a>
+  </div>`;
+    }
   }
 }
 
@@ -1476,9 +1664,10 @@ function printOrderSummary(items, list) {
   Object.entries(items).forEach(([key, item]) => {
     list.innerHTML += `<span class="dish">${item.name} (x${
       item.inOrder
-    })</span><span class="price">${(item.inOrder * item.price).toFixed(
-      2
-    )} €</span><br />`;
+    })</span><span class="price">${(
+      item.inOrder * item.price +
+      addOnsPrice(item)
+    ).toFixed(2)} €</span><br />`;
   });
 }
 
@@ -1489,12 +1678,12 @@ function paymentButtonOnclick(action, variation) {
     if (variation == 1) {
       paymentButton.setAttribute(
         "onclick",
-        "showLoading(1);app.tab.show('#view-homescreen');setItems('doesntMatter', 'paymentScreen');deleteDish('All');deleteDish('pastOrders');loadTo('orderHistory');displayOrders();"
+        "showLoading(1);app.tab.show('#view-homescreen');setItems('doesntMatter', 'paymentScreen');deleteDish('All');deleteDish('pastOrders');loadTo('orderHistory');displayOrders();resetCheckboxes()"
       );
     } else if (variation == 2) {
       paymentButton.setAttribute(
         "onclick",
-        "showLoading(1);app.tab.show('#view-homescreen');setItems('doesntMatter', 'pastOrders');deleteDish('pastOrders');loadTo('orderHistory');displayOrders();"
+        "showLoading(1);app.tab.show('#view-homescreen');setItems('doesntMatter', 'pastOrders');deleteDish('pastOrders');loadTo('orderHistory');displayOrders();resetCheckboxes()"
       );
     }
   } else if (action == "remove") {

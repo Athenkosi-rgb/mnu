@@ -11,7 +11,23 @@ const dishes = [
     price: 13.8,
     description: "Fresh Carpaccio of duck breast filet with rocket, Parmesan",
     ingredients: ["Duck", "Rocket", "Parmesan"],
-    addOns: ["extra Rocket", "extra Parmesan", "Capers"],
+    addOns: [
+      {
+        name: "extra Rocket",
+        price: 0.89,
+        added: false,
+      },
+      {
+        name: "extra Parmesan",
+        price: 0.75,
+        added: false,
+      },
+      {
+        name: "Capers",
+        price: 0.85,
+        added: false,
+      },
+    ],
     dietCompatible: [false, true, false, true, false, false, false], //Vegetarian, glutenfree, vegan, halal, kosher, prescetarian, lactose
   },
   {
@@ -25,7 +41,24 @@ const dishes = [
     description:
       "Thinly sliced veal cooked in a vegetable broth and white wine with tuna sauce and capers",
     ingredients: ["Veal", "Capers", "Wine", "Fish", "Egg", "Sulfites"],
-    addOns: ["no Wine", "no Capers", "Parmesan"],
+    addOns: [
+      {
+        name: "no Wine",
+        price: 0.89,
+        added: false,
+      },
+      {
+        name: "no Capers",
+        price: 0.75,
+        added: false,
+      },
+      {
+        name: "Parmesan",
+        price: 0.85,
+        added: false,
+      },
+    ],
+
     dietCompatible: [false, true, false, false, false, false, true],
   },
   {
@@ -47,7 +80,23 @@ const dishes = [
       "Mollusc",
       "Sulfites",
     ],
-    addOns: ["extra Rocket", "extra Squid", "extra Shrimp"],
+    addOns: [
+      {
+        name: "extra Rocket",
+        price: 0.89,
+        added: false,
+      },
+      {
+        name: "extra Squid",
+        price: 0.75,
+        added: false,
+      },
+      {
+        name: "extra Shrimp",
+        price: 0.85,
+        added: false,
+      },
+    ],
     dietCompatible: [false, true, false, false, false, true, true],
   },
   //Salads --------------------------------------------------------------------
@@ -61,7 +110,23 @@ const dishes = [
     price: 7.5,
     description: "Mixed green, carrots, tomatoes and cucumber ",
     ingredients: ["Carrot", "Tomato", "Cucumber"],
-    addOns: ["Eggplant", "Red Bell Pepper", "Corn"],
+    addOns: [
+      {
+        name: "Eggplant",
+        price: 0.89,
+        added: false,
+      },
+      {
+        name: "Red Bell Pepper",
+        price: 0.75,
+        added: false,
+      },
+      {
+        name: "Corn",
+        price: 0.85,
+        added: false,
+      },
+    ],
     dietCompatible: [true, true, true, true, true, true, true],
   },
   {
@@ -74,7 +139,23 @@ const dishes = [
     price: 9.9,
     description: "Mozzarella with fresh tomatoes and basil ",
     ingredients: ["Mozarella", "Tomato", "Basil", "Balsamico"],
-    addOns: ["no Basil", "no Balsamico", "Pepper"],
+    addOns: [
+      {
+        name: "no Basil",
+        price: 0.89,
+        added: false,
+      },
+      {
+        name: "no Balsamico",
+        price: 0.75,
+        added: false,
+      },
+      {
+        name: "Pepper",
+        price: 0.85,
+        added: false,
+      },
+    ],
     dietCompatible: [true, true, false, true, true, true, false],
   },
   {
@@ -87,7 +168,23 @@ const dishes = [
     price: 12.5,
     description: "Grilled antipasti vegetables",
     ingredients: ["Carrot", "Tomato", "Eggplant", "Zucchini", "Olive Oil"],
-    addOns: ["red Bell Pepper", "Corn", "Parmesan"],
+    addOns: [
+      {
+        name: "red Bell Pepper",
+        price: 0.89,
+        added: false,
+      },
+      {
+        name: "Corn",
+        price: 0.75,
+        added: false,
+      },
+      {
+        name: "Parmesan",
+        price: 0.85,
+        added: false,
+      },
+    ],
     dietCompatible: [true, true, true, true, true, true, true],
   },
   //Pizza ---------------------------------------------------------------
@@ -114,7 +211,23 @@ const dishes = [
       "Mollusc",
       "Sulfites",
     ],
-    addOns: ["Corn", "no Garlic", "extra Cheese"],
+    addOns: [
+      {
+        name: "Corn",
+        price: 0.89,
+        added: false,
+      },
+      {
+        name: "no Garlic",
+        price: 0.75,
+        added: false,
+      },
+      {
+        name: "extra Cheese",
+        price: 0.85,
+        added: false,
+      },
+    ],
     dietCompatible: [false, false, false, true, false, true, false],
   },
   {
@@ -127,7 +240,7 @@ const dishes = [
     price: 8.95,
     description: "Pizza Salami with tomatoes, cheese, salami",
     ingredients: ["Cheese", "Tomato", "Salami"],
-    addOns: ["extra Cheese"],
+    addOns: [{ name: "extra Cheese", price: 0.68, added: false }],
     dietCompatible: [false, false, false, true, true, false, false],
   },
   {
@@ -140,7 +253,23 @@ const dishes = [
     price: 9.8,
     description: "Pizza with artichokes or green chili peppers",
     ingredients: ["Artichokes", "Tomato", "Chili", "Sulfites"],
-    addOns: ["no Artichokes", "no Chili", "Cheese"],
+    addOns: [
+      {
+        name: "no Artichokes",
+        price: 0.89,
+        added: false,
+      },
+      {
+        name: "no Chili",
+        price: 0.75,
+        added: false,
+      },
+      {
+        name: "Cheese",
+        price: 0.85,
+        added: false,
+      },
+    ],
     dietCompatible: [true, false, true, true, true, true, true],
   },
   //Pasta --------------------------------------------------------------------------
@@ -154,7 +283,7 @@ const dishes = [
     price: 13.9,
     description: "Tagliatelle with salmon and zucchini in lobster-sauce",
     ingredients: ["Salmon", "Zucchini", "Lobster", "Noodles", "Egg"],
-    addOns: ["Parmesan"],
+    addOns: [{ name: "Parmesan", price: 0.9, added: false }],
     dietCompatible: [false, false, false, true, false, true, true],
   },
   {
@@ -167,7 +296,7 @@ const dishes = [
     price: 12.5,
     description: "Homemade Ravioli with spinach and ricotta cheese",
     ingredients: ["Noodles", "Spinach", "Ricotta", "Egg"],
-    addOns: ["Parmesan"],
+    addOns: [{ name: "Parmesan", price: 0.9, added: false }],
     dietCompatible: [true, false, false, false, true, true, false],
   },
   {
@@ -180,7 +309,10 @@ const dishes = [
     price: 13.5,
     description: "Ribbon noodles with duck ragout",
     ingredients: ["Noodles", "Duck", "Celery", "Egg"],
-    addOns: ["Parmesan", "Chives"],
+    addOns: [
+      { name: "Parmesan", price: 0.9, added: false },
+      { name: "Chives", price: 0.9, added: false },
+    ],
     dietCompatible: [false, false, false, false, false, false, false],
   },
   //Fish ---------------------------------------------------------------------
@@ -204,7 +336,10 @@ const dishes = [
       "Carrot",
       "Crustaceans",
     ],
-    addOns: ["no Garlic", "no Chili"],
+    addOns: [
+      { name: "no Garlic", price: 0.9, added: false },
+      { name: "no Chili", price: 0.9, added: false },
+    ],
     dietCompatible: [false, true, false, true, false, true, true],
   },
   {
@@ -254,7 +389,10 @@ const dishes = [
       "Garlic",
       "Chili",
     ],
-    addOns: ["no Garlic", "no Chili"],
+    addOns: [
+      { name: "no Garlic", price: 0.9, added: false },
+      { name: "no Chili", price: 0.9, added: false },
+    ],
     dietCompatible: [false, true, false, false, false, false, true],
   },
   {
@@ -289,7 +427,10 @@ const dishes = [
     price: 7.2,
     description: "Tiramisu with almond sponge",
     ingredients: ["Almond", "Egg", "Peanut", "Nuts", "Alcohol"],
-    addOns: ["no Almonds", "extra Almonds"],
+    addOns: [
+      { name: "no Almonds", price: 0.9, added: false },
+      { name: "extra Almonds", price: 0.9, added: false },
+    ],
     dietCompatible: [true, false, false, true, false, true, false],
   },
   {
@@ -302,7 +443,7 @@ const dishes = [
     price: 6.8,
     description: "",
     ingredients: ["Egg", "Nuts"],
-    addOns: ["Mint"],
+    addOns: [{ name: "Mint", price: 0.73, added: false }],
     dietCompatible: [true, false, false, true, false, true, false],
   },
   {
@@ -315,7 +456,7 @@ const dishes = [
     price: 6.8,
     description: "",
     ingredients: ["Cream", "Strawberry"],
-    addOns: ["extra Strawberry Sauce"],
+    addOns: [{ name: "extra Strawberry Sauce", price: 1.0, added: false }],
     dietCompatible: [true, true, false, true, true, true, false],
   },
   //Hot Drinks ------------------------------------------------------------
@@ -355,7 +496,13 @@ const dishes = [
     price: 2.95,
     description: "",
     ingredients: [],
-    addOns: ["Peppermint", "Apple", "Wild Berries", "Camomile", "Earl Grey"],
+    addOns: [
+      { name: "Peppermint", price: 0.56, added: false },
+      { name: "Apple", price: 0.79, added: false },
+      { name: "Wild Berries", price: 0.68, added: false },
+      { name: "Camomile", price: 0.57, added: false },
+      { name: "Earl Grey", price: 5.0, added: false },
+    ],
     dietCompatible: [true, true, true, true, true, true, true],
   },
   //Soft Drink -------------------------------------------------------
@@ -369,7 +516,7 @@ const dishes = [
     price: 2.95,
     description: "",
     ingredients: [],
-    addOns: ["Lemon"],
+    addOns: [{ name: "Lemon", price: 0.6, added: false }],
     dietCompatible: [true, true, true, true, true, true, true],
   },
   {

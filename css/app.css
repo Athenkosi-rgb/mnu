@@ -261,11 +261,11 @@ hr {
 }
 
 /*style for action button at bottom of screen row*/
+/* #add-button, */
 #order-button,
 #confirm-button,
 #pay-button,
 #paylater-button,
-#add-button,
 #view-grouporder-button,
 #view-grouporder-button2,
 #view-grouporder-button3 {
@@ -273,6 +273,17 @@ hr {
   position: fixed;
   bottom: 75px;
 
+  /* centering element */
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+}
+
+#add-button {
+  position: absolute;
+  bottom: 15px;
+  margin-top: 15px;
+  width: 92vw;
   /* centering element */
   left: 0;
   right: 0;
