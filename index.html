@@ -100,7 +100,7 @@
                     <div
                       class="item-content nav-item item-title tab-link panel-close"
                       href="#view-order-history"
-                      onclick="loadTo('orderHistory');"
+                      onclick="loadTo('orderHistory');displayToolbar(0)"
                     >
                       <div class="item-media">
                         <i class="icon f7-icons if-not-md"></i
@@ -120,6 +120,7 @@
                     <div
                       class="item-content nav-item item-title tab-link panel-close link favourite-panel"
                       href="#view-favourites"
+                      onclick="displayToolbar(0)"
                     >
                       <div class="item-media">
                         <i class="icon f7-icons if-not-md"></i
@@ -229,7 +230,7 @@
         <!-- Tabbar for switching views-tabs -->
         <div class="toolbar toolbar-bottom tabbar-labels" id="common-toolbar">
           <div class="toolbar-inner">
-            <a href="#view-homescreen" class="tab-link">
+            <a href="#view-homescreen" class="tab-link" id="home-toolbar">
               <i class="icon f7-icons if-not-md">house_fill</i>
               <i class="icon material-icons if-md">home</i>
               <span class="tabbar-label">Home</span>
@@ -249,7 +250,7 @@
                 >receipt<span class="badge color-red" id="count1"></span
               ></i>
               <i class="icon material-icons md-only"
-                >receipt<span class="badge color-green" id="count2">0</span></i
+                >receipt<span class="badge color-red" id="count2">0</span></i
               >
               <span class="tabbar-label">Order</span>
             </a>
@@ -525,7 +526,5 @@
     <script src="js/allergies.js"></script>
     <!-- Diet script-->
     <script src="js/diet.js"></script>
-    <!-- Group Order script-->
-    <script src="js/dishesInGroupOrder.js"></script>
   </body>
 </html>

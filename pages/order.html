@@ -18,16 +18,15 @@
   <!-- Scrollable page content-->
   <div class="page-content">
     <div class="list media-list inset" id="order-page">
-      <ul id="order-list">
-        <pre>   Your current order is empty!   </pre>
-      </ul>
+      <img src="assets/EmptyOrder.png" id="empty-order-img" alt="image" />
+      <ul id="order-list"></ul>
     </div>
     <div class="list media-list inset" id="pastOrders-page">
       <ul>
         <li class="accordion-item">
           <a class="item-content item-link accordian-title" href="#">
             <div class="item-inner" onclick="expand();">
-              <span class="item-title">Past-Orders</span>
+              <span class="item-title">Already ordered</span>
               <i
                 class="material-icons material-icons-outlined"
                 id="accordian-icon"
@@ -46,22 +45,11 @@
         </li>
       </ul>
     </div>
-
     <div class="block">
       <a
-        class="button button-large button-fill sheet-open"
-        href="#"
-        data-sheet=".my-sheet-swipe-to-step"
-        id="view-grouporder-button"
-        >View Group Order</a
-      >
-    </div>
-
-    <div class="block">
-      <a
-        class="col button button-large button-fill button-raised tab-link"
+        class="col button button-large button-fill button-raised tab-link text-color-black"
         id="order-button"
-        >Order</a
+        >Place Order</a
       >
     </div>
   </div>

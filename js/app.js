@@ -53,7 +53,7 @@ $("body").click(function () {
 let selectedDish;
 
 //initialize app
-userOnboarding();
+// userOnboarding();
 function init() {
   showAllergies();
   showDiets();
@@ -73,7 +73,7 @@ function init() {
   selectedDish = dishes[0];
 
   console.log(`selectedDish = ${dishes[0]}`);
-  first = firstTime = firstGroupOrder = true;
+  first = firstTime = true;
 }
 
 function displayToolbar(a) {
@@ -99,41 +99,54 @@ function expand() {
 
 let filter = true;
 
-function userOnboarding() {
-  let userOnboarding = localStorage.getItem("displayOnboarding");
-  userOnboarding = JSON.parse(userOnboarding);
-  if (userOnboarding != null && userOnboarding == false) {
-    document.getElementById("view-home").innerHTML = ` `;
-    document.getElementById(
-      "view-home"
-    ).innerHTML = `<div class="page" data-name="preorder">
-    <div class="block-title block-title-medium text-align-center">Welcome!</div>
-  
-    <div class="page-content">
-      <!--buttons for preordering and scanning qr code-->
-      <div class="button-container">
-        <a
-          href=""
-          class="button button-raised button-fill buttons-preorder tab-link qr-code"
-          onclick="init();displayMenuTabs();displayToolbar(1);app.dialog.alert('You are checked in at table 4','Successfully checked in'); showCheckIn(); app.tab.show('#view-homescreen');"
-          style="background-image: url(assets/qr-code.png)"
-        ></a>
-  
-        <a href="" class="button button-raised button-fill buttons-preorder"
-          >Preorder</a
-        >
-      </div>
-    </div>
-  </div>`;
-  } else {
-    localStorage.setItem("displayOnboarding", false);
-  }
-}
+// function userOnboarding() {
+//   let userOnboarding = localStorage.getItem("displayOnboarding");
+//   userOnboarding = JSON.parse(userOnboarding);
+//   if (userOnboarding != null && userOnboarding == false) {
+//     document.getElementById("view-home").innerHTML = ` `;
+//     document.getElementById(
+//       "view-home"
+//     ).innerHTML = `<div class="page" data-name="preorder">
+//     <div class="block-title block-title-medium text-align-center">Welcome!</div>
+
+//     <div class="page-content">
+//       <!--buttons for preordering and scanning qr code-->
+//       <div class="button-container">
+//         <a
+//           href=""
+//           class="button button-raised button-fill buttons-preorder tab-link qr-code"
+//           onclick="init();displayMenuTabs();displayToolbar(1);app.dialog.alert('You are checked in at table 4','Successfully checked in'); showCheckIn(); app.tab.show('#view-homescreen');"
+//           style="background-image: url(assets/qr-code.png)"
+//         ></a>
+
+//         <a href="" class="button button-raised button-fill buttons-preorder"
+//           >Preorder</a
+//         >
+//       </div>
+//     </div>
+//   </div>`;
+//   } else {
+//     localStorage.setItem("displayOnboarding", false);
+//   }
+// }
 
 //========================================================DISH-MENU STUFF=======================================================================================================================================
 
 let currentTab;
 let currentLink;
+let firstTime;
+let filterIconString;
+
+//For Filter Icon string to work
+function isFirstTime() {
+  if (firstTime) {
+    filterIconString = "Show all dishes";
+    firstTime = false;
+  } else {
+    filterIconString = document.getElementById("filter-button").innerHTML;
+  }
+  return firstTime;
+}
 
 //show tab menu in dish overview
 function displayMenuTabs() {
@@ -168,8 +181,6 @@ function showDishes(tabName, tabLink) {
   currentLink = tabLink;
 
   isFirstTime();
-  addButtonSheetOpen(false);
-
   //loads id's of different tabs
   dishes.forEach((dishes) => {
     if (dishes.tab === tabName) {
@@ -177,15 +188,10 @@ function showDishes(tabName, tabLink) {
         "tab-dishes"
       ).innerHTML = `<div id="${tabLink}" class="page-content tab">
       <div class="buton-filter-container">
-      <button class="button button-small button-raised button-fill sheet-open"
-      href="#"
-      data-sheet=".my-sheet-swipe-to-close"
-      id="grouporder-button"
-    >
-    <i class="icon material-icons if-md group_add">group_add</i>
-    Group Order</button>
-    <span id="filter-button" class="button button-raised">
-    <i class="icon material-icons" id="filter-icon-on">${filterIconString}</i>
+      <span><i class="material-icons md-10 icon-explanation">grass</i> = vegan </span>
+      <span><i class="material-icons md-10 icon-explanation">priority_high</i> = Ingredients with allergies</span>
+    <span id="filter-button" class="button button-raised button-fill text-color-black">
+    ${filterIconString}
     </span>
     </div>
       <div id="innertab" class="block full-width" style="margin: 0;"></div></div>`;
@@ -206,10 +212,6 @@ function showDishes(tabName, tabLink) {
         printDishCard(dishes, 0);
       }
     });
-
-    document.getElementById(
-      "innertab"
-    ).innerHTML += `<div class="block"><a class="button button-large button-fill sheet-open" href="#" data-sheet=".my-sheet-swipe-to-step" id="view-grouporder-button3">View Group Order</a></div>`;
   }
 
   //filter off, non-allergic food gets marked
@@ -219,10 +221,6 @@ function showDishes(tabName, tabLink) {
         printDishCard(dishes, 1);
       }
     });
-
-    document.getElementById(
-      "innertab"
-    ).innerHTML += `<div class="block"><a class="button button-large button-fill sheet-open" href="#" data-sheet=".my-sheet-swipe-to-step" id="view-grouporder-button3">View Group Order</a></div>`;
   }
   document
     .getElementById("filter-button")
@@ -230,39 +228,8 @@ function showDishes(tabName, tabLink) {
       "onclick",
       "toggleFilter();showDishesFilter();showFilterPopup();"
     );
-
-  addButtonSheetOpen(true);
   allergyBadgeOverview();
   veganBanner();
-}
-
-function addButtonSheetOpen(a) {
-  if (a) {
-    if (isGroupOrderActive()) {
-      dishes.forEach((dishes) => {
-        if (!!document.querySelector(`.d${dishes.id}`)) {
-          //addboxSheetOpen =
-          document.querySelector(`.d${dishes.id}`).classList.add("sheet-open");
-          //addboxSwipeToStep =
-          document
-            .querySelector(`.d${dishes.id}`)
-            .setAttribute("data-sheet", ".my-sheet-swipe-to-step");
-        }
-      });
-      groupOrder();
-    }
-  } else if (!a) {
-    dishes.forEach((dishes) => {
-      if (!!document.querySelector(`.d${dishes.id}`)) {
-        //addboxSheetOpen =
-        document.querySelector(`.d${dishes.id}`).classList.remove("sheet-open");
-        //addboxSwipeToStep =
-        document
-          .querySelector(`.d${dishes.id}`)
-          .removeAttribute("data-sheet", ".my-sheet-swipe-to-step");
-      }
-    });
-  }
 }
 
 function printDishCard(dishes, warning) {
@@ -306,9 +273,9 @@ function printDishCard(dishes, warning) {
 //toggle Filter for dishes
 function toggleFilter() {
   filter = filter ? false : true;
-  document.getElementById("filter-icon-on").innerHTML = filter
-    ? "filter_list"
-    : "filter_list_off";
+  document.getElementById("filter-button").innerHTML = filter
+    ? "Show all dishes"
+    : "Filter dishes";
 }
 
 //filter explanation alert that appears the first time you click on "menu", if you have filters activated
@@ -386,7 +353,7 @@ function switchAllergy(allergy, allergysettings, imageSrc) {
   var img = document.getElementById(allergy).src;
   var imgSettings = document.getElementById(allergysettings).src;
   //switch for onboarding
-  if (img.indexOf("assets/Selected") != -1) {
+  if (img.indexOf("assets/deselected") != -1) {
     document.getElementById(allergy).src = `${imageSrc}`;
     allergyArray.forEach((element) => {
       if (element == allergy) {
@@ -394,11 +361,11 @@ function switchAllergy(allergy, allergysettings, imageSrc) {
       }
     });
   } else {
-    document.getElementById(allergy).src = "assets/Selected.png";
+    document.getElementById(allergy).src = "assets/deselected.png";
     allergyArray.push(allergy);
   }
   //switch for settings
-  if (imgSettings.indexOf("assets/Selected") != -1) {
+  if (imgSettings.indexOf("assets/deselected") != -1) {
     document.getElementById(allergysettings).src = `${imageSrc}`;
     allergyArray.forEach((element) => {
       if (element == allergy) {
@@ -406,7 +373,7 @@ function switchAllergy(allergy, allergysettings, imageSrc) {
       }
     });
   } else {
-    document.getElementById(allergysettings).src = "assets/Selected.png";
+    document.getElementById(allergysettings).src = "assets/deselected.png";
     allergyArray.push(allergy);
   }
 }
@@ -484,6 +451,7 @@ function veganBanner() {
 function displayOrders() {
   let orderList = document.getElementById("order-list");
   let orderButton = document.getElementById("order-button");
+  let orderEmpty = document.getElementById("empty-order-img");
   let orderItems = localStorage.getItem("dishesInOrder");
   let pastOrdersItems = localStorage.getItem("pastOrders");
   let orderNumber = 0;
@@ -491,10 +459,15 @@ function displayOrders() {
   orderItems = JSON.parse(orderItems);
   pastOrdersItems = JSON.parse(pastOrdersItems);
 
-  orderButton.removeAttribute("onclick", "displayOverview('pastOrders');");
+  //clear order button onclicks (to prevent bugs)
+  orderButton.removeAttribute("onclick", "displayOverview()");
   orderButton.removeAttribute("onclick", "displayPayment('pastOrders');");
+  orderButton.removeAttribute("onclick", "displayToolbar(0)");
+  displayBackPayment(1);
 
   if (updateOrderCount() > 0 && orderItems != null) {
+    orderEmpty.style.display = "none";
+    orderList.style.display = "block";
     //putting relevant stuff on orderList
     orderList.innerHTML = "";
     Object.values(orderItems).map((item) => {
@@ -549,18 +522,25 @@ function displayOrders() {
   </li>`;
     orderButton.classList.add("tab-link");
     orderButton.href = "#view-order-empty";
-    orderButton.setAttribute("onclick", "displayOverview('pastOrders');");
-    orderButton.innerHTML = "Order";
+    orderButton.setAttribute(
+      "onclick",
+      "displayPayment('order');displayOverview();displayToolbar(0)"
+    );
+    orderButton.innerHTML = "Place Order";
     orderButton.setAttribute(
       "style",
       "background-color: var(--f7-theme-color);"
     );
   } else if (orderNumber == 0 && pastOrdersItems != null) {
     orderList.innerHTML = ``;
-    orderList.innerHTML += "Your current order is empty!";
+    orderList.style.display = "none";
+    orderEmpty.style.display = "none";
     orderButton.classList.add("tab-link");
     orderButton.href = "#view-payment";
-    orderButton.setAttribute("onclick", "displayPayment('pastOrders');");
+    orderButton.setAttribute(
+      "onclick",
+      "displayPayment('pastOrders');displayToolbar(0);displayBackPayment(0)"
+    );
     orderButton.innerHTML = "Pay";
     orderButton.setAttribute(
       "style",
@@ -569,8 +549,9 @@ function displayOrders() {
   } else {
     orderButton.classList.remove("tab-link");
     orderList.innerHTML = ``;
-    orderList.innerHTML += "Your current order is empty!";
-    orderButton.innerHTML = "Order";
+    orderList.style.display = "none";
+    orderEmpty.style.display = "block";
+    orderButton.innerHTML = "Place Order";
     orderButton.setAttribute(
       "style",
       "background-color: var(--f7-theme-color); opacity: 0.45"
@@ -581,12 +562,29 @@ function displayOrders() {
   loadTo("pastOrders");
 }
 
+function displayBackPayment(from) {
+  if (from == 0) {
+    document.querySelector(".back-payment").style.display = "none";
+  } else if (from == 1) {
+    document.querySelector(".back-payment").style.display = "block";
+  }
+}
+
 //ORDER OVERVIEW: load display overview page contents
-function displayOverview() {
+function displayOverview(from) {
   let overviewPage = document.getElementById("overview");
   let orderItems = localStorage.getItem("dishesInOrder");
 
   orderItems = JSON.parse(orderItems);
+
+  if (from == "payment") {
+    //return
+  } else {
+    document.querySelector(".x-close").style.display = "block";
+    document.querySelector(".x-load").style.display = "block";
+    document.querySelector("#order-placed-img").src = "assets/OrderPlaced.png";
+    abortOrder();
+  }
 
   if (updateOrderCount() == null) {
     //to prevent "null" error when order button is pressed
@@ -596,51 +594,44 @@ function displayOverview() {
     //and there are no dishes on the list
     document.getElementById(
       "prep"
-    ).innerHTML = `<div class="block block-strong">
+    ).innerHTML = `<div class="block text-align-center">
   <p>Your dishes are being prepared</p>
-  <p>
-    <span class="progressbar-infinite"></span>
-  </p>
+  <img src="assets/bananaaa.gif" alt="loading animation" width="30%"> 
 </div>`;
   }
 
   overviewPage.innerHTML = ``;
   overviewPage.innerHTML += `<div class="block">
-    <div class="block block-strong">
-      <p>Your dishes are being prepared</p>
-      <p>
-        <span class="progressbar-infinite"></span>
-      </p>
-    </div>
-  </div>
-  <div class="block">
-    <div class="block-title">
-      Subtotal
-      <span style="float: right">${(
-        updateOrderTotal() + updatePastOrderTotal()
-      ).toFixed(2)} €</span>
-    </div>
-  </div>
-
-  <div class="block">
     <a
       href="#view-payment"
-      class="col button button-large button-fill button-raised tab-link"
+      class="col button button-large button-fill button-raised tab-link text-color-black"
       id="pay-button"
-      onclick="showLoading(0.6);displayPayment('order');"
+      onclick="showLoading(0.6);displayPayment('order');displayToolbar(0)"
       >Pay Now</a
     >
   </div>
   <div class="block">
     <a
-      href="#view-homescreen"
-      class="col button button-large button-fill button-raised tab-link"
+
+      href=""
+      class="col button button-large button-fill button-raised tab-link text-color-black"
       id="paylater-button"
       onclick="showLoading(0.6);setItems('doesntMatter', 'overviewScreen');
-      deleteDish('All');loadTo('pastOrders');displayOrders()"
+      deleteDish('All');loadTo('pastOrders');displayOrders(); app.tab.show('#view-homescreen');displayToolbar(1)"
       >Pay Later</a
     >
   </div>`;
+}
+
+function abortOrder() {
+  //give user about 10 seconds after order has been placed to go back to the order screen
+  //after that hide close button
+  //and change image
+  setTimeout(() => {
+    document.querySelector(".x-close").style.display = "none";
+    document.querySelector(".x-load").style.display = "none";
+    document.querySelector("#order-placed-img").src = "assets/OrderPlaced2.png";
+  }, 10000);
 }
 
 //set/add dish to local storage
@@ -840,24 +831,14 @@ function deleteDish(dish) {
 function addDish(dish, from) {
   if (from == "dishoverview") {
     //from dishoverview
-    if (isGroupOrderActive()) {
-      addToGroupOrder(dish, from);
-      displayGroupOrder();
-    } else {
-      //show preloader for 0.37 seconds
-      showLoading(0.37);
-      setItems(dish, "dishoverview");
-    }
+    //show preloader for 0.37 seconds
+    showLoading(0.37);
+    setItems(dish, "dishoverview");
   } else if (from == "detailedView") {
     //from detailedview - accessed through orderscreen
-    if (isGroupOrderActive()) {
-      addToGroupOrder(dish, from);
-      displayGroupOrder();
-    } else {
-      //show preloader for 0.6 seconds
-      showLoading(0.6);
-      setItems(dish, "detailedView");
-    }
+    //show preloader for 0.6 seconds
+    showLoading(0.6);
+    setItems(dish, "detailedView");
   } else if (from == "orderscreen") {
     //from detailedview - accessed through orderscreen
     //show preloader for 0.6 seconds
@@ -871,6 +852,8 @@ function addDish(dish, from) {
 function loadTo(to) {
   let orderHistoryList = document.getElementById("orderHistory-list");
   let pastOrdersList = document.getElementById("pastOrders-list");
+  let pastOrdersPage = document.getElementById("pastOrders-page");
+  let orderHistoryEmpty = document.getElementById("order-history-img");
   let orderItems = localStorage.getItem("dishesInOrder");
   let orderHistoryItems = localStorage.getItem("orderHistory");
   let pastOrdersItems = localStorage.getItem("pastOrders");
@@ -881,6 +864,9 @@ function loadTo(to) {
 
   if (to == "orderHistory") {
     if (orderHistoryItems != null) {
+      orderHistoryList.style.display = "block";
+      orderHistoryEmpty.style.display = "none";
+
       orderHistoryList.innerHTML = "";
 
       Object.entries(orderHistoryItems).forEach(([key, value]) => {
@@ -918,10 +904,12 @@ function loadTo(to) {
       });
     } else {
       orderHistoryList.innerHTML = ``;
-      orderHistoryList.innerHTML = "Ordered and paid dishes go here!";
+      orderHistoryList.style.display = "none";
+      orderHistoryEmpty.style.display = "block";
     }
   } else if (to == "pastOrders") {
     if (pastOrdersItems != null) {
+      pastOrdersPage.style.display = "block";
       pastOrdersList.innerHTML = "";
 
       Object.entries(pastOrdersItems).forEach(([key, value]) => {
@@ -955,367 +943,11 @@ function loadTo(to) {
           </div>
         </li>`;
     } else {
+      pastOrdersPage.style.display = "none";
       pastOrdersList.innerHTML = ``;
       pastOrdersList.innerHTML = "Ordered but unpaid dishes go here!";
     }
   }
-}
-
-//========================================================GROUP-ORDERING STUFF=======================================================================================================================================
-
-let firstTime;
-
-function isFirstTime() {
-  if (firstTime) {
-    filterIconString = "filter_list";
-    firstTime = false;
-  } else {
-    filterIconString = document.getElementById("filter-icon-on").innerHTML;
-  }
-  return firstTime;
-}
-
-function isGroupOrderActive() {
-  let viewGroupOrderButton = document.querySelector("#view-grouporder-button");
-  let groupOrderActive =
-    viewGroupOrderButton.style.display == "block" ? true : false;
-  console.log("isGroupOrderActive() = ", groupOrderActive);
-  return groupOrderActive;
-}
-
-function clearYourOrder() {
-  let numberOfDishes = yourOrder.length;
-  for (i = 0; i < numberOfDishes; i++) {
-    console.log("Before pop(): yourOrder.length = ", yourOrder.length);
-    yourOrder.pop();
-    console.log("After pop(): yourOrder.length = ", yourOrder.length);
-  }
-
-  clearGroupOrder();
-}
-
-function addToGroupOrder(dish, from) {
-  stpValueInt = app.stepper.getValue("#steppy");
-
-  console.log("addToGroupOrder(dish) called!");
-  console.log("We want to add = ", dish);
-  console.log("BEFORE: yourOrder = ", yourOrder);
-  let notInGroupOrder = true;
-  if (from == "dishoverview") {
-    if (yourOrder != null) {
-      console.log("if (yourOrder != null)");
-      yourOrder.forEach((item) => {
-        if (dish == item) {
-          console.log("(dish == item)");
-          /*if dish already in array*/
-          item.inOrder += 1;
-          notInGroupOrder = false;
-        }
-      });
-      if (notInGroupOrder) {
-        dish.inOrder = 1;
-        yourOrder.push(dish);
-      }
-    } else {
-      dish.inOrder = 1;
-      yourOrder.push(dish);
-    }
-  } else if (from == "detailedView") {
-    if (yourOrder != null) {
-      console.log("if (yourOrder != null)");
-      yourOrder.forEach((item) => {
-        if (dish == item) {
-          console.log("(dish == item)");
-          /*if dish already in array*/
-          item.inOrder += stpValueInt;
-          notInGroupOrder = false;
-        }
-      });
-      if (notInGroupOrder) {
-        dish.inOrder = stpValueInt;
-        yourOrder.push(dish);
-      }
-    } else {
-      dish.inOrder = stpValueInt;
-      yourOrder.push(dish);
-    }
-  }
-  console.log("AFTER: yourOrder = ", yourOrder);
-}
-
-function groupOrderName() {
-  let groupOrderName = document.querySelector("#groupOrder-name");
-  document.querySelector(
-    ".groupOrder-name"
-  ).innerHTML = `${groupOrderName.value}'s Group Order`;
-  document.querySelector(
-    ".groupOrder-name3"
-  ).innerHTML = `${groupOrderName.value}'s Group Order`;
-}
-
-function groupOrder() {
-  console.log("groupOrder() called!");
-
-  let groupOrderName = document.querySelector("#groupOrder-name");
-  let groupOrderButton = document.querySelector("#grouporder-button");
-  let orderButton = document.querySelector("#order-button");
-  let inviteGuestsButton = document.querySelector("#shareGroupOrder");
-  let createGroupButton = document.querySelector("#groupOrderCreate");
-  let viewGroupOrderButton = document.querySelector("#view-grouporder-button");
-  let viewGroupOrderButton2 = document.querySelector(
-    "#view-grouporder-button2"
-  );
-  let viewGroupOrderButton3 = document.querySelector(
-    "#view-grouporder-button3"
-  );
-  document.querySelector(
-    ".groupOrder-name2"
-  ).innerHTML = `${groupOrderName.value} (You)`;
-
-  console.log("groupOrderButton.innerHTML = ", groupOrderButton.innerHTML);
-
-  groupOrderButton.innerHTML = `<i class="icon material-icons if-md group_add">group_add</i>View Group Order`;
-  groupOrderButton.setAttribute("data-sheet", ".my-sheet-swipe-to-step");
-  groupOrderButton.setAttribute("onclick", "displayGroupOrder()");
-  viewGroupOrderButton.setAttribute("onclick", "displayGroupOrder()");
-  viewGroupOrderButton2.setAttribute("onclick", "displayGroupOrder()");
-  viewGroupOrderButton3.setAttribute("onclick", "displayGroupOrder()");
-  inviteGuestsButton.setAttribute("onclick", "shareOrderLink()");
-  createGroupButton.setAttribute("onclick", "shareOrderLink()");
-  orderButton.style.display = "none";
-  viewGroupOrderButton.style.display =
-    viewGroupOrderButton2.style.display =
-    viewGroupOrderButton3.style.display =
-      "block";
-
-  if (firstGroupOrder) {
-    firstGroupOrder = false;
-    showDishes(currentTab, currentLink);
-    activateChips(currentTab);
-  }
-}
-
-function shareOrderLink() {
-  if (navigator.share) {
-    navigator
-      .share({
-        title: "Menu App",
-        text: "Join my MeNu order from Meritiamo un aumento",
-        url: "https://framework7.io/docs/installation",
-      })
-      .then(() => console.log("Successful share"))
-      .catch((error) => console.log("Error sharing", error));
-  } else {
-    console.log("Web Share API is not supported in your browser.");
-  }
-}
-
-function clearGroupOrder() {
-  console.log("clearGroupOrder() called!");
-  let groupOrderButton = document.querySelector("#grouporder-button");
-  let orderButton = document.querySelector("#order-button");
-  let viewGroupOrderButton = document.querySelector("#view-grouporder-button");
-  let viewGroupOrderButton2 = document.querySelector(
-    "#view-grouporder-button2"
-  );
-  let viewGroupOrderButton3 = document.querySelector(
-    "#view-grouporder-button3"
-  );
-  let profileBlock1 = document.querySelector(".profile-block1");
-  let profileBlock2 = document.querySelector(".profile-block2");
-  let profileBlock3 = document.querySelector(".profile-block3");
-  let yourOrderList = document.getElementById("yourGroupOrder");
-  let friend1OrderList = document.getElementById("friend1GroupOrder");
-  let friend2OrderList = document.getElementById("friend2GroupOrder");
-  let groupOrderTotalHtml = document.getElementById("groupOrderTotal");
-
-  //putting relevant stuff on orderList
-  //Your order items
-  yourOrderList.innerHTML =
-    friend1OrderList.innerHTML =
-    friend2OrderList.innerHTML =
-      " ";
-
-  groupOrderTotalHtml.innerHTML = `0.00 €`;
-  profileBlock1.style.display =
-    profileBlock2.style.display =
-    profileBlock3.style.display =
-      "none";
-
-  //do some stuff here
-  viewGroupOrderButton.style.display =
-    viewGroupOrderButton2.style.display =
-    viewGroupOrderButton3.style.display =
-      "none";
-  orderButton.style.display = "block";
-
-  groupOrderButton.innerHTML ==
-    `<i class="icon material-icons if-md group_add">group_add</i>Group Order`;
-  groupOrderButton.removeAttribute("data-sheet", ".my-sheet-swipe-to-step");
-
-  app.sheet.close(".my-sheet-swipe-to-step", true);
-
-  let orderItems = localStorage.getItem("dishesInOrder");
-  orderItems = JSON.parse(orderItems);
-
-  //reset dishes.inOrder
-  //if the dish is in an active order set inOrder to 1
-  //if dish is in the groupOrder set inOrder to 0
-  if (orderItems !== null) {
-    dishes.forEach((dish) => {
-      if (orderItems[dish.id] != null) {
-        dish.inOrder = 1;
-      } else {
-        dish.inOrder = 0;
-      }
-    });
-  } else {
-    dishes.forEach((dish) => {
-      dish.inOrder = 0;
-    });
-  }
-
-  showLoading(1);
-  firstGroupOrder = true;
-  firstTime = true;
-  isGroupOrderActive();
-  showDishes(currentTab, currentLink);
-  activateChips(currentTab);
-}
-
-function cancelGroupOrder(makePayment) {
-  console.log("cancelGroupOrder(makePayment) called!");
-  if (makePayment == "yes") {
-    app.dialog.confirm(
-      "Click ok to proceed with payment",
-      "Group Order Payment",
-      clearYourOrder
-    );
-  } else {
-    app.dialog.confirm(
-      "All items will be removed",
-      "Cancel group order?",
-      clearYourOrder
-    );
-  }
-}
-
-let first;
-
-function displayGroupOrder() {
-  console.log("displayGroupOrder() called!");
-  let profileBlock1 = document.querySelector(".profile-block1");
-  let groupOrderButton = document.querySelector("#grouporder-button");
-  let yourOrderList = document.getElementById("yourGroupOrder");
-  let friend1OrderList = document.getElementById("friend1GroupOrder");
-  let friend2OrderList = document.getElementById("friend2GroupOrder");
-  let groupOrderTotalHtml = document.getElementById("groupOrderTotal");
-  let viewGroupOrderButton = document.querySelector("#view-grouporder-button");
-  let here1 = document.querySelector(".here1");
-  let here2 = document.querySelector(".here2");
-  let viewGroupOrderButton2 = document.querySelector(
-    "#view-grouporder-button2"
-  );
-  let viewGroupOrderButton3 = document.querySelector(
-    "#view-grouporder-button3"
-  );
-  let groupOrderTotal = 0.0;
-
-  if (first) {
-    mockTime = 1000;
-    first = false;
-  } else {
-    mockTime = 0;
-  }
-  //putting relevant stuff on orderList
-  //Your order items
-  yourOrderList.innerHTML =
-    friend1OrderList.innerHTML =
-    friend2OrderList.innerHTML =
-    here1.innerHTML =
-    here2.innerHTML =
-      " ";
-  profileBlock1.style.display = "block";
-
-  yourOrder.forEach((item) => {
-    groupOrderTotal += item.inOrder * item.price;
-    yourOrderList.innerHTML +=
-      '<li class="swipeout swiper"><div class="item-content swipeout-content"><div class="item-media serving-counter"><!-- serving - counter --><i class="icon f7-icons if-not-md"><span class="badge color-blue serving-count2">' +
-      item.inOrder +
-      '</span></i><i class="icon material-icons md-only"><span class="badge color-blue serving-count2">' +
-      item.inOrder +
-      '</span></i></div><div class="item-inner"><div class="item-title-row"><div class="item-title">' +
-      item.name +
-      '</div><div class="item-after order-price">' +
-      (item.inOrder * item.price).toFixed(2) +
-      '€</div></div><div class="item-subtitle">' +
-      item.tab +
-      '</div></div><div class="swipeout-actions-right"></div></div></li><li>';
-  });
-  //   //Update total
-  groupOrderTotalHtml.innerHTML = `${groupOrderTotal.toFixed(2)} €`;
-
-  //Friends order items
-  setTimeout(() => {
-    here1.innerHTML += `<div class="block-title margin-top profile-block2">
-      <img
-        class="profile-image"
-        src="assets/Avatars2.png"
-        alt="image"
-      /><span>Luna</span>
-    </div>`;
-    friendsOrder1.forEach((item) => {
-      item.inOrder = 1;
-      groupOrderTotal += item.inOrder * item.price;
-      friend1OrderList.innerHTML +=
-        '<li class="swipeout swiper"><div class="item-content swipeout-content"><div class="item-media serving-counter"><!-- serving - counter --><i class="icon f7-icons if-not-md"><span class="badge color-blue serving-count2">' +
-        item.inOrder +
-        '</span></i><i class="icon material-icons md-only"><span class="badge color-blue serving-count2">' +
-        item.inOrder +
-        '</span></i></div><div class="item-inner"><div class="item-title-row"><div class="item-title">' +
-        item.name +
-        '</div><div class="item-after order-price">' +
-        (item.inOrder * item.price).toFixed(2) +
-        '€</div></div><div class="item-subtitle">' +
-        item.tab +
-        '</div></div><div class="swipeout-actions-right"></div></div></li><li>';
-    });
-    //   //Update total
-    groupOrderTotalHtml.innerHTML = `${groupOrderTotal.toFixed(2)} €`;
-  }, mockTime);
-
-  //Friends order items
-  setTimeout(() => {
-    here2.innerHTML += `<div class="block-title margin-top profile-block3">
-      <img
-        class="profile-image"
-        src="assets/Avatars4.png"
-        alt="image"
-      /><span>Jens</span>
-    </div>`;
-    friendsOrder2.forEach((item) => {
-      item.inOrder = 1;
-      groupOrderTotal += item.inOrder * item.price;
-      friend2OrderList.innerHTML +=
-        '<li class="swipeout swiper"><div class="item-content swipeout-content"><div class="item-media serving-counter"><!-- serving - counter --><i class="icon f7-icons if-not-md"><span class="badge color-blue serving-count2">' +
-        item.inOrder +
-        '</span></i><i class="icon material-icons md-only"><span class="badge color-blue serving-count2">' +
-        item.inOrder +
-        '</span></i></div><div class="item-inner"><div class="item-title-row"><div class="item-title">' +
-        item.name +
-        '</div><div class="item-after order-price">' +
-        (item.inOrder * item.price).toFixed(2) +
-        '€</div></div><div class="item-subtitle">' +
-        item.tab +
-        '</div></div><div class="swipeout-actions-right"></div></div></li><li>';
-    });
-    //   //Update total
-    groupOrderTotalHtml.innerHTML = `${groupOrderTotal.toFixed(2)} €`;
-  }, mockTime * 4);
-  groupOrderButton.removeAttribute("onclick", "displayGroupOrder()");
-  viewGroupOrderButton.removeAttribute("onclick", "displayGroupOrder()");
-  viewGroupOrderButton2.removeAttribute("onclick", "displayGroupOrder()");
-  viewGroupOrderButton3.removeAttribute("onclick", "displayGroupOrder()");
 }
 
 //========================================================DETAILED-DISH-VIEW STUFF=======================================================================================================================================
@@ -1323,7 +955,8 @@ function displayGroupOrder() {
 //load unique detailed-view based on card clicked in dishoverview
 
 function loadDetailedView(from) {
-  let detailedViewImg = document.querySelector(".detailed-img");
+  let detailedViewImg = document.getElementById("detailed-img");
+  detailedViewImg.src = `${selectedDish.imgSrc}`;
   let detailedViewTitle = document.querySelector(".detailed-title");
   let detailedViewDesc = document.querySelector(".detailed-desc");
   let addOnsList = document.querySelector("#addOns-list");
@@ -1332,13 +965,15 @@ function loadDetailedView(from) {
   let back_link = document.querySelector("#arrow_back");
   let orderedDishes = localStorage.getItem("dishesInOrder");
   let orderedDish = [];
+  let imageHeight;
+  let body45vh;
+  let tooShort;
   let ingredientAccordion = document.getElementById("ingredient-list");
   let allergyWarning = document.getElementById("allergy-paragraph");
-  document.querySelector(".detailed-img").classList.remove("alter-height");
+  document.getElementById("detailed-img").classList.remove("alter-height");
 
   orderedDishes = JSON.parse(orderedDishes);
 
-  detailedViewImg.src = `${selectedDish.imgSrc}`;
   detailedViewTitle.innerHTML = `${selectedDish.name}`;
   detailedViewDesc.innerHTML = `${selectedDish.description}`;
   ingredientAccordion.innerHTML = addIngredientList();
@@ -1349,6 +984,14 @@ function loadDetailedView(from) {
       : "block";
 
   stpValueInt = app.stepper.getValue("#steppy");
+
+  //fix incosistent image height
+  imageHeight = document.getElementById("detailed-img").height;
+  body45vh = 0.45 * document.body.clientHeight;
+  tooShort = imageHeight < body45vh ? true : false;
+  if (tooShort) {
+    document.getElementById("detailed-img").classList.add("alter-height");
+  }
 
   if (from == "dishoverview") {
     app.stepper.setValue("#steppy", 1);
@@ -1392,14 +1035,6 @@ function loadDetailedView(from) {
       }
     }
   }
-
-  let imageHeight = document.querySelector(".detailed-img").clientHeight;
-  let body45vh = 0.45 * document.body.clientHeight;
-  let tooShort = imageHeight < body45vh ? true : false;
-
-  if (tooShort) {
-    document.querySelector(".detailed-img").classList.add("alter-height");
-  }
 }
 
 //Add ingredient list to detailed view
@@ -1416,7 +1051,13 @@ function addOns(dish) {
   let addOnString = "";
 
   dish.addOns.forEach((addOn, i) => {
+    let minusSign;
     console.log(`checking: ${addOn.name}.added = `, addOn.added);
+    if (addOn.name.includes("no")) {
+      minusSign = "-";
+    } else {
+      minusSign = "";
+    }
     if (addOn.added == true) {
       addOnString +=
         '<li><label class="item-checkbox item-content"><input type="checkbox" name="demo-checkbox" id="checkbox' +
@@ -1428,6 +1069,7 @@ function addOns(dish) {
         ')" checked="true"><i class="icon icon-checkbox"></i><div class="item-inner"><div class="item-title-row"><div class="item-title">' +
         addOn.name +
         '</div></div><div class="item-subtitle">' +
+        minusSign +
         addOn.price +
         " €</div></div></label></li>";
       console.log(addOnString);
@@ -1442,6 +1084,7 @@ function addOns(dish) {
         ')"><i class="icon icon-checkbox"></i><div class="item-inner"><div class="item-title-row"><div class="item-title">' +
         addOn.name +
         '</div></div><div class="item-subtitle">' +
+        minusSign +
         addOn.price +
         " €</div></div></label></li>";
     }
@@ -1459,6 +1102,8 @@ function addOnsPrice(dish) {
   let addOnsPrice = 0;
 
   console.log("let addOnsPrice = ", addOnsPrice);
+  console.log("PROBLEM LIES HERE!============================");
+  console.log(`${dish.name}.addOns =`, dish.addOns);
   dish.addOns.forEach((addOn) => {
     if (checkedItems != null) {
       if (checkedItems[`${dish.id}_${addOn.name}`] == undefined) {
@@ -1468,10 +1113,10 @@ function addOnsPrice(dish) {
         };
         if (checkedItems[`${dish.id}_${addOn.name}`].added == true) {
           if (addOn.name.includes("no")) {
-            //if the word contains extra - add to total
+            //else if it contains no - decrement total
             addOnsPrice -= addOn.price;
           } else {
-            //else if it contains no - decrement total
+            //if the word contains extra - add to total
             addOnsPrice += addOn.price;
           }
         } else {
@@ -1586,7 +1231,7 @@ function updateDetailedPrice(dish, from) {
       <a
         onclick="addDish(dishes[${selectedDish.id - 1}],'detailedView');"
         href="#view-dishoverview"
-        class="col button button-large button-fill button-raised tab-link"
+        class="col button button-large button-fill button-raised tab-link text-color-black"
         id="add-button"
         >Add to order • ${buttonPrice.toFixed(2)} €
       </a>
@@ -1601,7 +1246,7 @@ function updateDetailedPrice(dish, from) {
         <a
           onclick="showLoading(1);deleteDish(dishes[${selectedDish.id - 1}]);"
           href="#view-order"
-          class="col button button-large button-fill button-raised tab-link"
+          class="col button button-large button-fill button-raised tab-link text-color-black"
           id="add-button"
           >Delete Dish</a></div>`;
     } else {
@@ -1609,7 +1254,7 @@ function updateDetailedPrice(dish, from) {
     <a
       onclick="addDish(dishes[${dish.id - 1}],'orderscreen');"
       href="#view-dishoverview"
-      class="col button button-large button-fill button-raised tab-link"
+      class="col button button-large button-fill button-raised tab-link text-color-black"
       id="add-button"
       >Update Order • ${buttonPrice.toFixed(2)} €
     </a>
@@ -1624,7 +1269,8 @@ function updateDetailedPrice(dish, from) {
 function displayPayment(from) {
   let paymentList = document.querySelector(".payment-card");
   let pastPaymentList = document.querySelector(".past-payment-card");
-  let pastOrdersInner = document.querySelector(".pastOrders-inner");
+  let paymentList1 = document.querySelector(".payment-card1");
+  let pastPaymentList1 = document.querySelector(".past-payment-card1");
   let orderItems = localStorage.getItem("dishesInOrder");
   let pastOrderItems = localStorage.getItem("pastOrders");
 
@@ -1634,38 +1280,41 @@ function displayPayment(from) {
   paymentButtonOnclick("remove");
 
   if (from == "order") {
-    //hide pastOrders summary
-    pastOrdersInner.style.display = "none";
     printOrderSummary(orderItems, paymentList);
-
     if (pastOrderItems) {
-      //hide pastOrders summary
-      pastOrdersInner.style.display = "block";
+      //show pastOrders summary
+      pastPaymentList.style.display = "block";
 
-      Object.entries(pastOrderItems).forEach(([key, value]) => {
-        if (key > 1) {
-          pastPaymentList.innerHTML += `<hr>`;
-        }
-        printOrderSummary(value, pastPaymentList);
+      Object.values(pastOrderItems).forEach((pastOrders) => {
+        printOrderSummary(pastOrders, pastPaymentList);
       });
+    } else {
+      //hide pastOrders summary
+      pastPaymentList.style.display = "none";
     }
 
     printPaymentPrice(from);
     paymentButtonOnclick("set", 1);
   } else if (from == "pastOrders") {
     //hide pastOrders summary
-    pastOrdersInner.style.display = "none";
+    pastPaymentList.style.display = "none";
 
-    Object.entries(pastOrderItems).forEach(([key, value]) => {
-      printOrderSummary(value, pastPaymentList);
+    Object.values(pastOrderItems).forEach((pastOrders) => {
+      printOrderSummary(pastOrders, paymentList);
     });
     printPaymentPrice(from);
     paymentButtonOnclick("set", 2);
   }
+  //Pass reference of payment summary screen to order overview screen
+  // pastPaymentList1.style.display = pastPaymentList.style.display;
+  // paymentList1.innerHTML = paymentList.innerHTML;
+  // pastPaymentList1.innerHTML = pastPaymentList.innerHTML;
 }
 
 function printPaymentPrice(from) {
+  console.log("printPaymentPrice(from)");
   let paymentPrice = document.querySelector(".payment-price");
+  let paymentPrice1 = document.querySelector(".payment-price1");
   paymentPrice.innerHTML = "";
 
   if (from == "order") {
@@ -1675,12 +1324,16 @@ function printPaymentPrice(from) {
   } else if (from == "pastOrders") {
     paymentPrice.innerHTML += `${updatePastOrderTotal().toFixed(2)} €`;
   }
+
+  //Transfer summary onto order-view screen
+  // paymentPrice1.innerHTML = paymentPrice.innerHTML;
 }
 
 function printOrderSummary(items, list) {
+  console.log("printOrderSummary(items, list)");
   list.innerHTML = "";
 
-  Object.entries(items).forEach(([key, item]) => {
+  Object.values(items).forEach((item) => {
     list.innerHTML += `<span class="dish">${item.name} (x${
       item.inOrder
     })</span><span class="price">${(
@@ -1697,22 +1350,22 @@ function paymentButtonOnclick(action, variation) {
     if (variation == 1) {
       paymentButton.setAttribute(
         "onclick",
-        "showLoading(1);app.tab.show('#view-homescreen');setItems('doesntMatter', 'paymentScreen');deleteDish('All');deleteDish('pastOrders');loadTo('orderHistory');displayOrders();resetCheckboxes()"
+        "showLoading(1);app.tab.show('#view-homescreen');setItems('doesntMatter', 'paymentScreen');deleteDish('All');deleteDish('pastOrders');loadTo('orderHistory');displayOrders();resetCheckboxes();displayToolbar(1)"
       );
     } else if (variation == 2) {
       paymentButton.setAttribute(
         "onclick",
-        "showLoading(1);app.tab.show('#view-homescreen');setItems('doesntMatter', 'pastOrders');deleteDish('pastOrders');loadTo('orderHistory');displayOrders();resetCheckboxes()"
+        "showLoading(1);app.tab.show('#view-homescreen');setItems('doesntMatter', 'pastOrders');deleteDish('pastOrders');loadTo('orderHistory');displayOrders();resetCheckboxes();displayToolbar(1)"
       );
     }
   } else if (action == "remove") {
     paymentButton.removeAttribute(
       "onclick",
-      'showLoading(1);app.tab.show("#view-homescreen");setItems("doesntMatter", "paymentScreen");deleteDish("All");loadTo("orderHistory");displayOrders();'
+      'showLoading(1);app.tab.show("#view-homescreen");setItems("doesntMatter", "paymentScreen");deleteDish("All");loadTo("orderHistory");displayOrders();displayToolbar(1)'
     );
     paymentButton.removeAttribute(
       "onclick",
-      'showLoading(1);app.tab.show("#view-homescreen");setItems("doesntMatter", "pastOrders");deleteDish("pastOrders");loadTo("orderHistory");displayOrders();'
+      'showLoading(1);app.tab.show("#view-homescreen");setItems("doesntMatter", "pastOrders");deleteDish("pastOrders");loadTo("orderHistory");displayOrders();displayToolbar(1)'
     );
   }
 }
@@ -1775,13 +1428,6 @@ function changeButtonState(button) {
   }
 }
 
-//show check-in status on homescreen
-function showCheckIn() {
-  document.getElementById("checkin").innerHTML = `
-  Checked into table 4
-  `;
-}
-
 //========================================================FAVOURITE STUFF=======================================================================================================================================
 
 function showDetailedHeader() {
@@ -1803,14 +1449,17 @@ function favouriteDish() {
   switchDish(selectedDish.id);
   document
     .querySelector(".favourite-panel")
-    .setAttribute("onclick", "displaySelected()");
+    .setAttribute("onclick", "displaySelected();displayToolbar(0)");
 }
 
 function displaySelected() {
   const favouriteList = document.getElementById("favourites-list");
+  let favouritesEmpty = document.getElementById("favourites-img");
   favouriteList.innerHTML = ""; // making sure that there is no content inside these two lists
   let notFavourite = 0;
 
+  favouriteList.style.display = "block";
+  favouritesEmpty.style.display = "none";
   //The code below takes the empty favourite list, and loads the dishes into this list
   dishes.forEach((dish) => {
     if (dish.favourite) {
@@ -1850,7 +1499,8 @@ function displaySelected() {
   if (dishes.length - notFavourite == 0) {
     /* if there are no favourite dishes */
     favouriteList.innerHTML = ``;
-    favouriteList.innerHTML = "Favourite dishes go here!";
+    favouriteList.style.display = "none";
+    favouritesEmpty.style.display = "block";
   }
 
   //always add selected class to current dish

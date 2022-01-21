@@ -1,23 +1,26 @@
 <!DOCTYPE html>
 <div class="page" data-name="order-history">
   <div class="navbar">
-    <div class="navbar-bg"></div>
+    <div class="navbar-bg overview-navbar"></div>
     <div class="navbar-inner">
       <div class="left">
-        <a href="#" class="link icon-only panel-open" data-panel="left">
-          <i class="icon f7-icons if-not-md">menu</i>
-          <i class="icon material-icons if-md">menu</i>
+        <a
+          href="#view-homescreen"
+          class="link icon-only tab-link"
+          onclick="displayToolbar(1);app.tab.show('#view-homescreen')"
+        >
+          <i class="icon f7-icons if-not-md">arrow_left</i>
+          <i class="icon material-icons if-md">arrow_back</i>
         </a>
       </div>
-      <div class="title">Order history</div>
+      <div class="title">Order History</div>
     </div>
   </div>
   <!-- Scrollable page content-->
   <div class="page-content">
     <div class="list media-list inset" id="orderHistory-page">
-      <ul id="orderHistory-list">
-        <pre>   Ordered and paid dishes go here!   </pre>
-      </ul>
+      <img src="assets/OrderHistory.png" id="order-history-img" alt="image" />
+      <ul id="orderHistory-list"></ul>
     </div>
   </div>
 </div>
