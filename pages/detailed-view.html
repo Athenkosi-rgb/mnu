@@ -2,14 +2,18 @@
 <!-- Top Navbar -->
 <div class="page" data-name="detailed-view">
   <!-- Scrollable page content-->
-  <div class="page-content">
+  <div class="page-content" id="detailed-scrollable">
     <div class="detailed-wrapper">
       <div class="picture-wrapper">
         <div class="transparent-nav">
           <div class="t_navbar-background"></div>
           <div class="t_navbar-inner">
             <div class="left">
-              <a href="#view-dishoverview" class="tab-link" id="arrow_back">
+              <a
+                class="tab-link"
+                id="arrow_back"
+                onclick="app.tab.show('#view-dishoverview')"
+              >
                 <i class="icon f7-icons if-not-md">arrow_back</i>
                 <i class="icon material-icons if-md">arrow_back</i>
               </a>

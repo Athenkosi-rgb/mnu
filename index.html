@@ -41,27 +41,18 @@
       >
         <div class="view">
           <div class="page">
-            <div class="navbar">
-              <div class="navbar-bg"></div>
-              <div class="navbar-inner">
-                <div class="sidenav-title">
-                  <img
-                    src="assets/App Logo.png"
-                    alt="Me'N'U Logo"
-                    width="70%"
-                    height="70%"
-                  />
-                </div>
-              </div>
-            </div>
             <div class="page-content">
+              <div class="navbar">
+                <div class="navbar-bg"></div>
+                <div class="navbar-inner"></div>
+              </div>
               <div class="list">
-                <ul>
+                <ul class="overview-navbar">
                   <li>
                     <div
                       class="item-content nav-item item-title tab-link panel-close link sortable-toggle"
                       data-sortable=".sortable"
-                      href="#view-entertainment"
+                      onclick="displayTab('#view-entertainment')"
                     >
                       <div class="item-media">
                         <i class="icon f7-icons if-not-md"></i
@@ -80,7 +71,7 @@
                   <li>
                     <div
                       class="item-content nav-item item-title tab-link panel-close"
-                      href="#view-settings"
+                      onclick="displayTab('#view-settings')"
                     >
                       <div class="item-media">
                         <i class="icon f7-icons if-not-md"></i
@@ -98,29 +89,8 @@
                   </li>
                   <li>
                     <div
-                      class="item-content nav-item item-title tab-link panel-close"
-                      href="#view-order-history"
-                      onclick="loadTo('orderHistory');displayToolbar(0)"
-                    >
-                      <div class="item-media">
-                        <i class="icon f7-icons if-not-md"></i
-                        ><i
-                          class="material-icons material-icons-outlined if-md"
-                        >
-                          history
-                        </i>
-                      </div>
-                      <div class="item-inner">
-                        <div>Order history</div>
-                        <div class="item-after"></div>
-                      </div>
-                    </div>
-                  </li>
-                  <li>
-                    <div
                       class="item-content nav-item item-title tab-link panel-close link favourite-panel"
-                      href="#view-favourites"
-                      onclick="displayToolbar(0)"
+                      onclick="displayTab('#view-favourites')"
                     >
                       <div class="item-media">
                         <i class="icon f7-icons if-not-md"></i
@@ -139,18 +109,18 @@
                   <li>
                     <div
                       class="item-content nav-item item-title tab-link panel-close"
-                      href="#"
+                      onclick="loadTo('orderHistory');displayTab('#view-order-history')"
                     >
                       <div class="item-media">
                         <i class="icon f7-icons if-not-md"></i
                         ><i
                           class="material-icons material-icons-outlined if-md"
                         >
-                          info
+                          history
                         </i>
                       </div>
                       <div class="item-inner">
-                        <div>About</div>
+                        <div>Order history</div>
                         <div class="item-after"></div>
                       </div>
                     </div>
@@ -170,6 +140,25 @@
                       </div>
                       <div class="item-inner">
                         <div>Help</div>
+                        <div class="item-after"></div>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div
+                      class="item-content nav-item item-title tab-link panel-close"
+                      href="#"
+                    >
+                      <div class="item-media">
+                        <i class="icon f7-icons if-not-md"></i
+                        ><i
+                          class="material-icons material-icons-outlined if-md"
+                        >
+                          info
+                        </i>
+                      </div>
+                      <div class="item-inner">
+                        <div>About</div>
                         <div class="item-after"></div>
                       </div>
                     </div>

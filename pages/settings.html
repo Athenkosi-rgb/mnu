@@ -5,8 +5,7 @@
     <div class="navbar-bg"></div>
     <div class="navbar-inner">
       <div class="left">
-        <a href="#" class="link icon-only panel-open" data-panel="left">
-          <i class="icon f7-icons if-not-md">menu</i>
+        <a class="link icon-only panel-open" data-panel="left">
           <i class="icon material-icons if-md">menu</i>
         </a>
       </div>
@@ -19,9 +18,8 @@
       <ul>
         <li>
           <a
-            href="#view-allergy"
             class="item-link item-content tab-link"
-            onclick="displayToolbar(0)"
+            onclick="displayTab('#view-allergy');displayToolbar(0);"
           >
             <div class="item-media">
               <i class="material-icons color-white">settings</i>

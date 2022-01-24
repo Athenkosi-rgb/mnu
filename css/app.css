@@ -102,12 +102,6 @@ hr {
   width: 100%;
 }
 
-/*style for confirm button*/
-.confirm-button {
-  width: 100%;
-  margin-bottom: 16px;
-}
-
 .center-button {
   display: flex;
   justify-content: center;
@@ -116,13 +110,21 @@ hr {
 
 /*alignment of payment screen*/
 .wrapper {
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
 }
 
 .payment-options {
-  margin-bottom: 50px;
+  margin-bottom: 20px;
+}
+
+.past-payment-card {
+  padding-top: 0px;
+}
+.payment-card {
+  padding-bottom: 16px;
 }
 
 /* ORDER SCREEN */
@@ -147,11 +149,11 @@ hr {
   margin-right: -15px;
 }
 
-.buton-filter-container {
+.button-filter-container {
   width: auto;
   font-size: x-small;
-  padding: 0px 15px;
-  padding-right: 14;
+  padding: 0px 10px;
+  padding-right: 14px;
   padding-top: 10px;
   display: flex;
   flex-direction: row;
@@ -183,30 +185,26 @@ hr {
   display: inline;
 }
 
-#favourites-img,
-#order-history-img,
-#order-placed-img,
-#empty-order-img {
-  margin: 0px;
-  position: absolute;
-  left: 0;
-  right: 0;
-  margin-left: auto;
-  margin-right: auto;
+.overview-navbar {
+  background: rgba(255, 255, 255, 0);
 }
 
-.overview-navbar {
-  opacity: 0;
-  background: rgba(255, 255, 255, 0);
+.chip.overview-navbar {
+  background: rgba(32, 32, 32, 0.7);
+  font-size: 10px;
+}
+
+.overview-page.overview-navbar {
+  opacity: 0 !important;
+}
+
+ul.overview-navbar {
+  background: rgba(255, 255, 255, 0) !important;
 }
 
 .x-load {
   margin-right: 12px;
   margin-top: 10px;
-}
-
-#overview {
-  margin-top: 0px;
 }
 
 /*style for order icon*/
@@ -285,6 +283,32 @@ hr {
   margin: 0 auto;
 }
 
+#confirm-button {
+  bottom: 30px;
+}
+
+#pay-button {
+  bottom: 150px;
+}
+
+/*For extremely short phones*/
+/* If height< 650px = a few components */
+@media only screen and (max-height: 650px) {
+  #empty-dish-img {
+    top: -25px;
+  }
+  #order-placed-img,
+  #empty-order-img {
+    top: -40px;
+  }
+  #pay-button {
+    bottom: 75px;
+  }
+  #paylater-button {
+    bottom: 10px;
+  }
+}
+
 #add-button {
   position: absolute;
   bottom: 15px;
@@ -309,10 +333,6 @@ hr {
 
 #reset {
   margin-top: calc(100vh - 440.9px);
-}
-
-#pay-button {
-  bottom: 150px;
 }
 
 /* PAST-ORDER SCREEN */
@@ -703,6 +723,19 @@ hr {
   margin-right: 15px;
 }
 
+#favourites-img,
+#order-history-img,
+#order-placed-img,
+#empty-order-img,
+#empty-dish-img {
+  width: 72.85vw;
+  margin: 0px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+}
 /*Feedback Screen*/
 
 .feedback {
@@ -872,12 +905,15 @@ hr {
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 }
 
-.icon-explanation{
+.icon-explanation {
   border-radius: 5vh;
   padding: 5px;
   background: white;
   color: green;
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+.allergen {
+  color: red;
 }
 
 /*=====================================TIC TAC TOE GAME======================================*/
@@ -1027,17 +1063,35 @@ hr {
 /*=====================================TIC TAC TOE GAME:footer======================================*/
 
 /*=====================================Material design==============================================*/
-.material-icons.md-10 { font-size: 10px; }
+.material-icons.md-10 {
+  font-size: 10px;
+}
 
-.material-icons.md-18 { font-size: 18px; }
-.material-icons.md-24 { font-size: 24px; }
-.material-icons.md-36 { font-size: 36px; }
-.material-icons.md-48 { font-size: 48px; }
+.material-icons.md-18 {
+  font-size: 18px;
+}
+.material-icons.md-24 {
+  font-size: 24px;
+}
+.material-icons.md-36 {
+  font-size: 36px;
+}
+.material-icons.md-48 {
+  font-size: 48px;
+}
 
 /* Rules for using icons as black on a light background. */
-.material-icons.md-dark { color: rgba(0, 0, 0, 0.54); }
-.material-icons.md-dark.md-inactive { color: rgba(0, 0, 0, 0.26); }
+.material-icons.md-dark {
+  color: rgba(0, 0, 0, 0.54);
+}
+.material-icons.md-dark.md-inactive {
+  color: rgba(0, 0, 0, 0.26);
+}
 
 /* Rules for using icons as white on a dark background. */
-.material-icons.md-light { color: rgba(255, 255, 255, 1); }
-.material-icons.md-light.md-inactive { color: rgba(255, 255, 255, 0.3); }
+.material-icons.md-light {
+  color: rgba(255, 255, 255, 1);
+}
+.material-icons.md-light.md-inactive {
+  color: rgba(255, 255, 255, 0.3);
+}
