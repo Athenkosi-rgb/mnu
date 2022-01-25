@@ -1526,6 +1526,29 @@ function paymentButtonOnclick(action, variation) {
 
 //========================================================HOMESCREEN STUFF=======================================================================================================================================
 
+$(document).on("page:beforein", '.page[data-name="homescreen"]', function (e) {
+  displayRestaurant();
+});
+
+function displayRestaurant() {
+  console.log("displayRestaurant() called!");
+  document.querySelector(".restaurant-card").innerHTML = `<div
+  style="background-image: url(assets/Restaurant1.jpg)"
+  class="card-header align-items-flex-end"
+>
+  Meritiamo un aumento
+</div>
+<div class="card-content card-content-padding">
+  <p>
+    Quisque eget vestibulum nulla. Quisque quis dui quis ex ultricies
+    efficitur vitae non felis. Phasellus quis nibh hendrerit...
+  </p>
+</div>
+<div class="card-footer">
+  <a href="#view-restaurant-info" class="tab-link">Read more</a>
+</div>`;
+}
+
 function changeButtonState(button) {
   //change "call-a-waiter"/"d-n-d" button state after clicked
   let btn = document.querySelector(button);
