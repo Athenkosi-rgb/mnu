@@ -43,8 +43,20 @@
           <div class="page">
             <div class="page-content">
               <div class="navbar">
-                <div class="navbar-bg"></div>
-                <div class="navbar-inner"></div>
+                <div
+                  class="navbar-bg overview-navbar"
+                  style="border-bottom: 1px solid rgb(255, 255, 255, 0.12)"
+                ></div>
+                <div class="navbar-inner">
+                  <div class="left">
+                    <img
+                      src="assets/Logo_Menu.png"
+                      class="sidenav-title"
+                      alt="sidenav-logo"
+                    />
+                  </div>
+                  <div class="title">MeNu</div>
+                </div>
               </div>
               <div class="list">
                 <ul class="overview-navbar">
@@ -178,31 +190,6 @@
                       </div>
                       <div class="item-inner">
                         <div>Checkout</div>
-                        <div class="item-after"></div>
-                      </div>
-                    </div>
-                  </li>
-                </ul>
-                <ul id="reset">
-                  <li>
-                    <div
-                      class="item-content nav-item item-title tab-link panel-close"
-                      href="#"
-                      onclick="window.localStorage.clear();app.dialog.alert(
-                      'Please refresh your browser!',
-                      'App has been reset'
-                    );"
-                    >
-                      <div class="item-media">
-                        <i class="icon f7-icons if-not-md"></i
-                        ><i
-                          class="material-icons material-icons-outlined if-md"
-                        >
-                          restart_alt
-                        </i>
-                      </div>
-                      <div class="item-inner">
-                        <div>Reset App:<br />for demo purposes!</div>
                         <div class="item-after"></div>
                       </div>
                     </div>
@@ -370,16 +357,6 @@
         >
           <!-- Preorder page will be loaded here dynamically from /preorder/ route -->
         </div>
-
-        <!-- Catalog View -->
-        <div
-          id="view-catalog"
-          class="view view-init tab"
-          data-name="catalog"
-          data-url="/catalog/"
-        >
-          <!-- Catalog page will be loaded here dynamically from /catalog/ route -->
-        </div>
         <!-- Allergy View -->
         <div
           id="view-allergy"
@@ -487,13 +464,6 @@
         >
           <!-- Favourites page will be loaded here dynamically from /home/ route -->
         </div>
-        <!-- <div
-        id="view-diet"
-        class="view view-init tab"
-        data-name="diet"
-        data-url="/diet/"
-      ></div> -->
-        <!-- Onbarding pages will be loaded here dynamically from /home/ route -->
       </div>
     </div>
     <!-- CORDOVA_PLACEHOLDER_DONT_REMOVE -->
@@ -503,8 +473,6 @@
     <script src="js/cordova-app.js"></script>
     <!-- App routes -->
     <script src="js/routes.js"></script>
-    <!-- App store -->
-    <script src="js/store.js"></script>
     <!-- App scripts -->
     <script src="js/app.js"></script>
     <!-- Menu tabs script-->

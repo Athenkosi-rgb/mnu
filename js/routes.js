@@ -12,10 +12,6 @@ var routes = [
     url: "./pages/detailed-view.html",
   },
   {
-    path: "/about/",
-    url: "./pages/about.html",
-  },
-  {
     path: "/allergy/",
     url: "./pages/allergy.html",
   },
@@ -34,18 +30,6 @@ var routes = [
   {
     path: "/diet/",
     url: "./pages/diet.html",
-  },
-  {
-    path: "/form/",
-    url: "./pages/form.html",
-  },
-  {
-    path: "/catalog/",
-    componentUrl: "./pages/catalog.html",
-  },
-  {
-    path: "/product/:id/",
-    componentUrl: "./pages/product.html",
   },
   {
     path: "/settings/",

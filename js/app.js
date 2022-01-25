@@ -7,8 +7,6 @@ var app = new Framework7({
   el: "#app", // App root element
 
   id: "io.framework7.myapp", // App bundle ID
-  // App store
-  store: store,
   // App routes
   routes: routes,
 
@@ -135,8 +133,9 @@ function init() {
   selectedDish = dishes[0];
   firstTime = true;
 
-  //QR stuffs
+  //QR scanner stuffs
   document.querySelector(".qr-code").addEventListener("click", function () {
+    //qr code scanner definitions
     cordova.plugins.barcodeScanner.scan(
       function (result) {
         let tableNo;
@@ -163,8 +162,19 @@ function init() {
         disableSuccessBeep: false, // iOS and Android
       }
     );
+
+    //shake stuffs
+    shake.startWatch(onShake, 40);
+
+    // Stop watching for shake gestures
+    // shake.stopWatch();
   });
 }
+
+var onShake = function () {
+  // Fired when a shake is detected -- add call a waiter code
+  alert("Some shaking happened!");
+};
 
 function displayToolbar(a) {
   //show/hide bottom toolbar
@@ -177,6 +187,7 @@ function displayToolbar(a) {
   }
 }
 
+//expand past-orders accordian
 function expand() {
   //open/close past-orders accordian
   expanded =
@@ -777,7 +788,7 @@ function abortOrder() {
   document.querySelector("#order-placed-img").src = "assets/OrderPlaced2.png";
   document.getElementById(
     "prep"
-  ).innerHTML = `<div class="block block-strong inset text-align-center">
+  ).innerHTML = `<div class="block block-strong inset text-align-center bananaaa">
   <p>Your dishes are being prepared</p>
   <img src="assets/bananaaa.gif" alt="loading animation" width="30%"> 
 </div>`;
@@ -1540,7 +1551,7 @@ function changeButtonState(button) {
       );
 
       //change colour to red
-      btn.style.backgroundColor = "red";
+      btn.style.backgroundColor = "#8c9c19";
       //change opacity
       btn.style.opacity = "0.5";
     }
@@ -1564,7 +1575,7 @@ function changeButtonState(button) {
       );
 
       //change colour to red
-      btn.style.backgroundColor = "red";
+      btn.style.backgroundColor = "#8c9c19";
       //change opacity
       btn.style.opacity = "0.5";
     }

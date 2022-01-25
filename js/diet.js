@@ -20,7 +20,7 @@ const diet = [
     src: "assets/kosher.jpg",
   },
   {
-    name: "Prescetarian",
+    name: "Pescetarian",
     src: "assets/pescetarian.png",
   },
   {

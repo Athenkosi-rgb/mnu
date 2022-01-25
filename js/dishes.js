@@ -246,7 +246,7 @@ const dishes = [
   {
     id: "9",
     inOrder: 0,
-    name: "Pizza Regina Vegano",
+    name: "Pizza Regina Vegana",
     tab: "Pizza",
     favourite: false,
     imgSrc: "assets/PizzaRegina.jpg",

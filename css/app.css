@@ -22,7 +22,9 @@
 
 /* NAVIGATION-DRAWER SCREEN */
 .sidenav-title {
-  margin-left: 60px;
+  margin-left: 18px;
+  height: 40px;
+  width: auto;
 }
 
 /* If width < 767px = change navbar height */
@@ -43,6 +45,16 @@
   background-color: --f7-theme-color;
 }
 
+/*dishes being prepared animation */
+.bananaaa {
+  background: rgb(255, 255, 255);
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.40940126050420167) 0%,
+    rgba(0, 0, 0, 0) 23%
+  );
+}
+
 /*Preorder screen flex container*/
 .button-container {
   /* padding: 25px; */
@@ -51,6 +63,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
+  color: #8c9c19;
 }
 
 /*DISH OVERVIEW SCREEN*/
@@ -347,6 +360,12 @@ ul.overview-navbar {
 .detailed {
   margin: 5px 0px 5px 0px;
   border-radius: 50%;
+}
+
+.circular-bg {
+  padding: 50%;
+  border-radius: 50%;
+  background-color: rgba(40, 36, 36, 0.5);
 }
 
 /*height of detailed-view image*/
@@ -1094,4 +1113,43 @@ ul.overview-navbar {
 }
 .material-icons.md-light.md-inactive {
   color: rgba(255, 255, 255, 0.3);
+}
+
+#transparent-overlay-left {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  height: 48px;
+  width: 4vh;
+  display: block;
+  background-image: linear-gradient(
+    to right,
+    rgba(40, 36, 36, 1) 0%,
+    rgba(40, 36, 36, 1) 25%,
+    rgba(40, 36, 36, 0.8) 44%,
+    rgba(40, 36, 36, 0.55) 59%,
+    rgba(40, 36, 36, 0.3) 73%,
+    rgba(40, 36, 36, 0) 100%
+  );
+  z-index: 1000;
+}
+
+#transparent-overlay-right {
+  position: fixed;
+  top: 0px;
+  right: 0px;
+  height: 48px;
+  width: 4vh;
+  display: block;
+  background-image: linear-gradient(
+    to left,
+    rgba(40, 36, 36, 1) 0%,
+    rgba(40, 36, 36, 1) 25%,
+    rgba(40, 36, 36, 0.8) 44%,
+    rgba(40, 36, 36, 0.55) 59%,
+    rgba(40, 36, 36, 0.3) 73%,
+    rgba(40, 36, 36, 0) 100%
+  );
+  pointer-events: none;
+  z-index: 1000;
 }
